@@ -1,0 +1,43 @@
+{
+    "name": "json-processing",
+    "version": "0.1.0",
+    "description": "Stream JSON processing tool",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "mocha --require babel-core/register"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tsouza/jp.git"
+    },
+    "keywords": [
+        "json",
+        "processing",
+        "rxjs",
+        "stream"
+    ],
+    "author": "Thiago Souza <thiago@elastic.co>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/tsouza/jp/issues"
+    },
+    "homepage": "https://github.com/tsouza/jp#readme",
+    "bin": {
+        "jp": "index.js"
+    },
+    "engines": {
+        "node": ">=6.0.0"
+    },
+    "dependencies": {
+        "bluebird": "^3.5.1",
+        "oboe": "^2.1.4"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "chai": "^4.1.2",
+        "del": "^3.0.0",
+        "gulp-babel": "^7.0.0",
+        "mocha": "^4.0.1"
+    }
+}
