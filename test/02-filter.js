@@ -54,7 +54,23 @@ describe('filter', () => {
             then(sorted => expect(sorted).to.
                 be.instanceOf(Array).and.
                 be.sortedBy('sort1', true)));
-        
+    
+    it('should calculate descriptive statistics over "num"', () =>
+        test('ndjson', '!.num[*]').
+            stats().toPromise().
+            then(stats => expect(stats).to.deep.equal({ min: 1,
+                max: 6,
+                sum: 21,
+                zeroes: 0,
+                mean: 3.5,
+                stddev: 1.707825127659933,
+                p01: 1,
+                p10: 1,
+                p25: 2.5,
+                p50: 3.5,
+                p75: 4.5,
+                p90: 6,
+                p99: 6 })));
 });
 
 function test(json, path) {
