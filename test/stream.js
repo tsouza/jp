@@ -7,43 +7,72 @@ import stream from '../lib/stream';
 import * as fs from 'fs';
 
 describe('stream', () => {
+    describe('value', () => {
+        describe('root object', () =>
+            generateValueTests('', [ 1, 2, 3 ]));
 
-    describe('root object', () => {
-        generateTests('', [ 1, 2, 3 ]);
+        describe('single nested variable key', () =>
+            generateValueTests('*.', [ 2, 4, 6 ]));  
+
+        describe('deep nested key', () =>
+            generateValueTests('.', [ 3, 6, 9 ]));
     });
 
-    describe('single nested variable key', () => {
-        generateTests('*.', [ 2, 4, 6 ]);
-    });  
+    describe('path metadata', () => {
+        describe('key', () =>
+            generatePathMetadataTests(node =>
+                expect(node).to.have.property('__key', 'path3')));
 
-    describe('deep nested key', () => {
-        generateTests('.', [ 3, 6, 9 ]);
-    });  
+        describe('parent', () =>
+            generatePathMetadataTests(node =>
+                expect(node).to.have.property('__parent')));
+
+        describe('path', () =>
+            generatePathMetadataTests(node =>
+                expect(node).to.have.deep.property('__path',
+                    ['path1', 'path2', 'path3'])));
+
+    });
 });
 
+function generatePathMetadataTests(validate) {
 
-function generateTests(path, counts) {
-    it('should handle simple json object', () => {
-        return test('simple', `!.${path}prop1`, data => 
-            expect(data).to.equal('value1')).
-            then(counter => expect(counter).to.equal(counts[0]));
-    });
+    it('should handle simple json object', () =>
+        test('simple', '!.path1.path2[*].path3', data => onNode(data)).
+            then(counter => expect(counter).to.equal(1)));
 
-    it('should handle simple array', () => {
-        return test('array', `![*].${path}prop1`, data => 
-            expect(data).to.equal('value1')).
-            then(counter => expect(counter).to.equal(counts[1]));
-    });
+    it('should handle simple array', () =>
+        test('array', '![*].path1.path2[*].path3', data => onNode(data)).
+            then(counter => expect(counter).to.equal(2)));
 
-    it('should handle newline delimited json', () => {
-        return test('ndjson', `!.${path}prop1`, data => 
+    it('should handle newline delimited json', () =>
+        test('ndjson', '!.path1.path2[*].path3', data => onNode(data)).
+            then(counter => expect(counter).to.equal(3)));
+    
+    function onNode(node) {
+        expect(node).to.have.property('path4', 'value2');
+        validate(node);
+    }
+}
+function generateValueTests(path, counts) {
+    it('should handle simple json object', () =>
+        test('simple', `!.${path}prop1`, data => 
             expect(data).to.equal('value1')).
-            then(counter => expect(counter).to.equal(counts[2]));
-    });
+            then(counter => expect(counter).to.equal(counts[0])));
+
+    it('should handle simple array', () =>
+        test('array', `![*].${path}prop1`, data => 
+            expect(data).to.equal('value1')).
+            then(counter => expect(counter).to.equal(counts[1])));
+
+    it('should handle newline delimited json', () =>
+        test('ndjson', `!.${path}prop1`, data => 
+            expect(data).to.equal('value1')).
+            then(counter => expect(counter).to.equal(counts[2])));
 }
 
-function test(num, path, validate) {
-    let source = fs.createReadStream(`${__dirname}/stream-tests/${num}.json`);
+function test(json, path, validate) {
+    let source = fs.createReadStream(`${__dirname}/stream-tests/${json}.json`);
     let counter = 0;
     return stream(source, path, node => {
         validate(node);
