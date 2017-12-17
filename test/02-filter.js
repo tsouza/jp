@@ -1,6 +1,8 @@
 /* eslint-env node, mocha */
 'use strict';
 
+import { KeyAndGroup } from '../lib/extensions/groupAndMergeBy';
+
 import { expect } from 'chai';
 
 import filter from '../lib/filter';
@@ -25,6 +27,14 @@ describe('filter', () => {
         test('ndjson', '!.num[*]').
             max().toPromise().
             then(val => expect(val).to.equal(6)));
+
+    it('should group by key "value1"', () =>
+        test('ndjson', '!').
+            groupAndMergeBy(e => e.prop1).toPromise().
+            then(group => expect(group).to.
+                be.instanceOf(KeyAndGroup).and.
+                have.property('groupKey', 'value1')));
+    
 
 });
 

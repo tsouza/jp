@@ -13,13 +13,13 @@ describe('output', () => {
 
     describe('json', () => {
 
-        it('should report simple json', () => 
+        it('should output simple json', () => 
             toString(json(test('ndjson', '!.object1'))).
                 then(out => expect(out).to.equal(repeat(
                     '{"prop1":"value1"}\n', 3
                 ))));
 
-        it('should report deep nested json', () => 
+        it('should output deep nested json', () => 
             toString(json(test('ndjson', '!..object5[*]'))).
                 then(out => expect(out).to.equal(repeat(
                     '{"prop2":"value1"}\n', 9
