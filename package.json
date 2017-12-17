@@ -29,6 +29,7 @@
         "node": ">=6.0.0"
     },
     "dependencies": {
+        "ascii-table": "0.0.9",
         "bluebird": "^3.5.1",
         "lodash": "^4.17.4",
         "oboe": "^2.1.4",

@@ -5,7 +5,8 @@ import { repeat } from 'lodash';
 
 import { expect } from 'chai';
 
-import { json } from '../lib/output';
+import { json, asciiTable } from '../lib/output';
+
 import filter from '../lib/filter';
 import * as fs from 'fs';
 
@@ -13,13 +14,13 @@ describe('output', () => {
 
     describe('json', () => {
 
-        it('should output simple json', () => 
+        it('should print simple json', () => 
             toString(json(test('ndjson', '!.object1'))).
                 then(out => expect(out).to.equal(repeat(
                     '{"prop1":"value1"}\n', 3
                 ))));
 
-        it('should output deep nested json', () => 
+        it('should print deep nested json', () => 
             toString(json(test('ndjson', '!..object5[*]'))).
                 then(out => expect(out).to.equal(repeat(
                     '{"prop2":"value1"}\n', 9
@@ -27,6 +28,61 @@ describe('output', () => {
 
     });
 
+    describe('table', () => {
+
+        it('should print simple objects', () =>
+            toString(asciiTable(test('ndjson', '!.object1'))).
+                then(out => expect(out).to.equal([
+                    '.--------.\n',
+                    '| prop1  |\n',
+                    '|--------|\n',
+                    '| value1 |\n',
+                    '| value1 |\n',
+                    '| value1 |\n',
+                    '\'--------\''
+                ].join(''))));
+       
+        it('should not print nested structures objects', () =>
+            toString(asciiTable(test('ndjson', '!').
+                map(o => ({ num: o.num, prop1: o.prop1, object1: o.object1 })))).
+                then(out => expect(out).to.equal([
+                    '.-----------------------------.\n',
+                    '|   num   | object1  | prop1  |\n',
+                    '|---------|----------|--------|\n',
+                    '| [array] | [object] | value1 |\n',
+                    '| [array] | [object] | value1 |\n',
+                    '| [array] | [object] | value1 |\n',
+                    '\'-----------------------------\''
+                ].join(''))));
+
+
+        it('should print grouped results', () =>
+            toString(asciiTable(test('ndjson', '!').
+                groupAndMergeBy(o => o.group1))).
+                then(out => expect(out).to.equal([
+                    '.---------------------------------------------------------------------------------.\n',
+                    '|                                     group1                                      |\n',
+                    '|---------------------------------------------------------------------------------|\n',
+                    '| group1 |   num   |  num2   | object1  | object3  | object4  |  path1   | prop1  |\n',
+                    '|--------|---------|---------|----------|----------|----------|----------|--------|\n',
+                    '| group1 | [array] | [array] | [object] | [object] | [object] | [object] | value1 |\n',
+                    '\'---------------------------------------------------------------------------------\'\n',
+                    '.---------------------------------------------------------------------------------.\n',
+                    '|                                     group2                                      |\n',
+                    '|---------------------------------------------------------------------------------|\n',
+                    '| group1 |   num   |  num2   | object1  | object3  | object4  |  path1   | prop1  |\n',
+                    '|--------|---------|---------|----------|----------|----------|----------|--------|\n',
+                    '| group2 | [array] | [array] | [object] | [object] | [object] | [object] | value1 |\n',
+                    '\'---------------------------------------------------------------------------------\'\n',
+                    '.---------------------------------------------------------------------------------.\n',
+                    '|                                     group3                                      |\n',
+                    '|---------------------------------------------------------------------------------|\n',
+                    '| group1 |   num   |  num2   | object1  | object3  | object4  |  path1   | prop1  |\n',
+                    '|--------|---------|---------|----------|----------|----------|----------|--------|\n',
+                    '| group3 | [array] | [array] | [object] | [object] | [object] | [object] | value1 |\n',
+                    '\'---------------------------------------------------------------------------------\''
+                ].join(''))));
+    });
 });
 
 function test(json, path) {
