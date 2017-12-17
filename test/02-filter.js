@@ -3,10 +3,10 @@
 
 import { expect } from 'chai';
 
-import process from '../lib/process';
+import filter from '../lib/filter';
 import * as fs from 'fs';
 
-describe('process', () => {
+describe('filter', () => {
 
     it('should reduce to simple array', () => 
         new Promise((resolve, reject) => {
@@ -30,5 +30,5 @@ describe('process', () => {
 
 function test(json, path) {
     const stream = fs.createReadStream(`${__dirname}/stream-tests/${json}.json`);
-    return process(stream, path);
+    return filter(stream, path);
 }
