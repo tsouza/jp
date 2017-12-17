@@ -72,7 +72,7 @@ function generateValueTests(path, counts) {
 }
 
 function test(json, path, validate) {
-    let source = fs.createReadStream(`${__dirname}/stream-tests/${json}.json`);
+    const source = fs.createReadStream(`${__dirname}/stream-tests/${json}.json`);
     let counter = 0;
     return parse(source, path, node => {
         validate(node);
