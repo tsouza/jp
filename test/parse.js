@@ -3,10 +3,10 @@
 
 import { expect } from 'chai';
 
-import stream from '../lib/stream';
+import parse from '../lib/parse';
 import * as fs from 'fs';
 
-describe('stream', () => {
+describe('parse', () => {
     describe('value', () => {
         describe('root object', () =>
             generateValueTests('', [ 1, 2, 3 ]));
@@ -74,7 +74,7 @@ function generateValueTests(path, counts) {
 function test(json, path, validate) {
     let source = fs.createReadStream(`${__dirname}/stream-tests/${json}.json`);
     let counter = 0;
-    return stream(source, path, node => {
+    return parse(source, path, node => {
         validate(node);
         counter++;
     }).then(() => counter);
