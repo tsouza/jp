@@ -3,10 +3,16 @@
 
 import { KeyAndGroup } from '../lib/extensions/groupAndMergeBy';
 
-import { expect } from 'chai';
+import { expect, use } from 'chai';
+import chaiSorted from 'chai-sorted';
+
+use(chaiSorted);
 
 import filter from '../lib/filter';
 import * as fs from 'fs';
+
+import { asc, desc } from 'comparator';
+
 
 describe('filter', () => {
 
@@ -35,7 +41,20 @@ describe('filter', () => {
                 be.instanceOf(KeyAndGroup).and.
                 have.property('groupKey', 'value1')));
     
-
+    it('should sort by key "sort1" asc', () =>
+        test('ndjson-sort', '!').
+            sort(asc('sort1')).toArray().toPromise().
+            then(sorted => expect(sorted).to.
+                be.instanceOf(Array).and.
+                be.sortedBy('sort1')));
+            
+    it('should sort by key "sort1" desc', () =>
+        test('ndjson-sort', '!').
+            sort(desc('sort1')).toArray().toPromise().
+            then(sorted => expect(sorted).to.
+                be.instanceOf(Array).and.
+                be.sortedBy('sort1', true)));
+        
 });
 
 function test(json, path) {

@@ -10,6 +10,8 @@ import { json, asciiTable } from '../lib/output';
 import filter from '../lib/filter';
 import * as fs from 'fs';
 
+import { asc } from 'comparator';
+
 describe('output', () => {
 
     describe('json', () => {
@@ -82,6 +84,20 @@ describe('output', () => {
                     '| group3 | [array] | [array] | [object] | [object] | [object] | [object] | value1 |\n',
                     '\'---------------------------------------------------------------------------------\''
                 ].join(''))));
+
+        it('should print sorted by "sort1" asc', () =>
+            toString(asciiTable(test('ndjson-sort', '!').
+                sort(asc('sort1')))).
+                then(out => expect(out).to.equal([
+                    '.-------.\n',
+                    '| sort1 |\n',
+                    '|-------|\n',
+                    '| val-1 |\n',
+                    '| val-2 |\n',
+                    '| val-3 |\n',
+                    '\'-------\''
+                ].join(''))));
+    
     });
 });
 
