@@ -1,6 +1,6 @@
 {
     "name": "json-processing",
-    "version": "0.1.0",
+    "version": "1.0.0-alpha1",
     "description": "Stream JSON processing tool",
     "main": "dist/index.js",
     "scripts": {
