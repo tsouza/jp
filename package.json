@@ -4,7 +4,8 @@
     "description": "Stream JSON processing tool",
     "main": "dist/index.js",
     "scripts": {
-        "test": "mocha --require babel-core/register"
+        "test": "mocha --require babel-core/register",
+        "install": "cd ./node_modules/rxjs-stream && npm install && npm run build"
     },
     "repository": {
         "type": "git",
@@ -35,9 +36,11 @@
         "fast-stats": "0.0.3",
         "lodash": "^4.17.4",
         "oboe": "^2.1.4",
+        "require-dir": "^0.3.2",
         "rxjs": "^5.5.5",
-        "rxjs-stream": "^1.0.4",
-        "tinyqueue": "^1.2.3"
+        "rxjs-stream": "tsouza/rx-stream#feature/onError",
+        "tinyqueue": "^1.2.3",
+        "vm2": "^3.5.2"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",
