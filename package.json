@@ -2,7 +2,6 @@
     "name": "json-processing",
     "version": "1.0.0-alpha1",
     "description": "Stream JSON processing tool",
-    "main": "dist/index.js",
     "scripts": {
         "test": "mocha --require babel-core/register",
         "install": "cd ./node_modules/rxjs-stream && npm install && npm run build"
@@ -24,7 +23,7 @@
     },
     "homepage": "https://github.com/tsouza/jp#readme",
     "bin": {
-        "jp": "index.js"
+        "jp": "dist/index.js"
     },
     "engines": {
         "node": ">=6.0.0"
