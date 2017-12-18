@@ -8,7 +8,7 @@ import del from 'del';
 gulp.task('clean', () => del('dist'));
 
 gulp.task('compile', () =>
-    gulp.src('lib/**/*.js', { base: '.' }).
+    gulp.src('src/**/*.js', { base: '.' }).
         pipe(babel()).
         pipe(gulp.dest('dist')));
 

@@ -12,7 +12,7 @@ export function json (observable) {
         map(o => `${JSON.stringify(o)}\n`));
 }
 
-export function asciiTable (observable) {
+export function tableAscii (observable) {
     return fromRxToStream(observable.
         reduce((builder, row) => builder.onRow(row), tableBuilder()).
         map(builder => builder.render()));

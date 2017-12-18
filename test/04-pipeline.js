@@ -3,7 +3,8 @@
 
 import { expect } from 'chai';
 
-import { PipelineBuilder } from '../pipeline';
+import { PipelineBuilder } from '../src/pipeline';
+import { json as toJSON } from '../src/lib/output';
 
 import { Readable } from 'stream';
 
@@ -16,7 +17,7 @@ describe('pipeline', () => {
         const input = fromString(json);
         const builder = new PipelineBuilder(input);
         builder.addPipelinePart('select("!")');
-        return toString(builder.build('json')).
+        return toString(toJSON(builder.build())).
             then(out => expect(out).to.equal(json));
     });
 
@@ -28,7 +29,7 @@ describe('pipeline', () => {
         builder.
             addPipelinePart('select("!")').
             addPipelinePart('map(o => ({prop2: o.prop1 + 1}))');
-        return toString(builder.build('json')).
+        return toString(toJSON(builder.build())).
             then(out => expect(out).to.equal(outJson));
     });
 
@@ -41,7 +42,7 @@ describe('pipeline', () => {
         builder.
             addPipelinePart('select("!")').
             addPipelinePart('map(o => _.omit(o, "prop1"))');
-        return toString(builder.build('json')).
+        return toString(toJSON(builder.build())).
             then(out => expect(out).to.equal(outJson));
     });
 });

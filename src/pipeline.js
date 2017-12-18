@@ -4,12 +4,12 @@ import filter from './lib/filter';
 import { merge, isString } from 'lodash';
 import requireDir from 'require-dir';
 
-import { json, asciiTable } from './lib/output';
 class GlobalChain {
 
     constructor(parent) {
         this._parent = parent;
         this._global = {};
+        this._parts = [];
     }
 
     _getGlobal() {
@@ -50,18 +50,16 @@ export class PipelineBuilder extends GlobalChain {
     }
 
     addPipelinePart(part) {
-        part = part.trim();
-        this._initVM();
-        this._stream = !this._stream ?
-            this._vm.run(`'use strict';${part}`) :
-            this._vm.run(`'use strict';stream().${part}`);
+        this._parts.push(part.trim());
         return this;
     }
 
-    build(mode) {
-        switch (mode) {
-            case 'json': return json(this._stream);
-            case 'table-ascii': return asciiTable(this._stream);
-        }
+    build() {
+        this._initVM();
+        this._parts.forEach(part =>
+            (this._stream = !this._stream ?
+                this._vm.run(`'use strict';${part}`) :
+                this._vm.run(`'use strict';stream().${part}`))); 
+        return this._stream;
     }
 }

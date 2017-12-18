@@ -5,9 +5,9 @@ import { repeat } from 'lodash';
 
 import { expect } from 'chai';
 
-import { json, asciiTable } from '../lib/output';
+import { json, tableAscii } from '../src/lib/output';
 
-import filter from '../lib/filter';
+import filter from '../src/lib/filter';
 import * as fs from 'fs';
 
 import { asc } from 'comparator';
@@ -33,7 +33,7 @@ describe('output', () => {
     describe('table', () => {
 
         it('should print simple objects', () =>
-            toString(asciiTable(test('ndjson', '!.object1'))).
+            toString(tableAscii(test('ndjson', '!.object1'))).
                 then(out => expect(out).to.equal([
                     '.--------.\n',
                     '| prop1  |\n',
@@ -45,7 +45,7 @@ describe('output', () => {
                 ].join(''))));
        
         it('should not print nested structures objects', () =>
-            toString(asciiTable(test('ndjson', '!').
+            toString(tableAscii(test('ndjson', '!').
                 map(o => ({ num: o.num, prop1: o.prop1, object1: o.object1 })))).
                 then(out => expect(out).to.equal([
                     '.-----------------------------.\n',
@@ -59,7 +59,7 @@ describe('output', () => {
 
 
         it('should print grouped results', () =>
-            toString(asciiTable(test('ndjson', '!').
+            toString(tableAscii(test('ndjson', '!').
                 groupAndMergeBy(o => o.group1))).
                 then(out => expect(out).to.equal([
                     '.---------------------------------------------------------------------------------.\n',
@@ -86,7 +86,7 @@ describe('output', () => {
                 ].join(''))));
 
         it('should print sorted by "sort1" asc', () =>
-            toString(asciiTable(test('ndjson-sort', '!').
+            toString(tableAscii(test('ndjson-sort', '!').
                 sort(asc('sort1')))).
                 then(out => expect(out).to.equal([
                     '.-------.\n',

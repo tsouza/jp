@@ -1,14 +1,14 @@
 /* eslint-env mocha */
 'use strict';
 
-import { KeyAndGroup } from '../lib/extensions/groupAndMergeBy';
+import { KeyAndGroup } from '../src/lib/extensions/groupAndMergeBy';
 
 import { expect, use } from 'chai';
 import chaiSorted from 'chai-sorted';
 
 use(chaiSorted);
 
-import filter from '../lib/filter';
+import filter from '../src/lib/filter';
 import * as fs from 'fs';
 
 import { asc, desc } from 'comparator';
