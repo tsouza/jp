@@ -1,7 +1,7 @@
 {
     "name": "json-processing",
     "version": "1.0.0-alpha1",
-    "description": "Stream JSON processing tool",
+    "description": "Stream-based JSON processing tool",
     "scripts": {
         "test": "mocha --require babel-core/register",
         "install": "cd ./node_modules/rxjs-stream && npm install && npm run build"
