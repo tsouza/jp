@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/tsouza/jp.git"
+        "url": "git+https://github.com/tsouza/json-processing.git"
     },
     "keywords": [
         "json",
@@ -19,9 +19,9 @@
     "author": "Thiago Souza <thiago@elastic.co>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/tsouza/jp/issues"
+        "url": "https://github.com/tsouza/json-processing/issues"
     },
-    "homepage": "https://github.com/tsouza/jp#readme",
+    "homepage": "https://github.com/tsouza/json-processing#readme",
     "bin": {
         "jp": "dist/index.js"
     },
