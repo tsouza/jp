@@ -23,6 +23,7 @@ class GlobalChain {
             object = requireDir(object, { recurse: true });
 
         this._global = merge({}, this._global, object || {});
+        return this;
     }
 
 } 
