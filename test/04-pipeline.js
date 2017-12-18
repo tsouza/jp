@@ -4,7 +4,6 @@
 import { expect } from 'chai';
 
 import { PipelineBuilder } from '../pipeline';
-import * as fs from 'fs';
 
 import { Readable } from 'stream';
 
