@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 /*eslint no-console: 0 */
 
-import './lib/extensions';
-
 import main from './main';
 
 main(process.argv.slice(1)).

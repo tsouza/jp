@@ -3,6 +3,8 @@
 import parseArgv from './argv';
 import { PipelineBuilder } from './pipeline';
 
+import './lib/extensions';
+
 export default (argv) =>
     parseArgv(argv).then(options => {
         const input = options['--input'].value;
