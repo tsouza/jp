@@ -1,9 +1,5 @@
 'use strict';
 
-import './extensions/groupAndMergeBy';
-import './extensions/sort';
-import './extensions/stats';
-
 import { Observable } from 'rxjs';
 import input from './input';
 

@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 'use strict';
 
+import '../src/lib/extensions';
 import { KeyAndGroup } from '../src/lib/extensions/groupAndMergeBy';
 
 import { expect, use } from 'chai';
