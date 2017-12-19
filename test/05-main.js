@@ -28,7 +28,7 @@ function test(temp) {
         `-i=${__dirname}/stream-tests/simple.json`,
         `-o=${temp}`,
         '-m=json',
-        'select("!")'
+        'select()'
     ]);
 }
 

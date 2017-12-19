@@ -3,33 +3,31 @@
 
 import { expect } from 'chai';
 
-import { PipelineBuilder } from '../src/pipeline';
+import { StreamScriptCompiler } from '../src/compiler';
 import { json as toJSON } from '../src/lib/output';
 
 import { Readable } from 'stream';
 
 import _ from 'lodash';
 
-describe('pipeline', () => {
+describe('compile', () => {
 
-    it('should create a simple pipeline', () => {
+    it('should compile simple inline', () => {
         const json = '{"prop1":1}\n';
         const input = fromString(json);
-        const builder = new PipelineBuilder(input);
-        builder.addPipelinePart('select("!")');
-        return toString(toJSON(builder.build())).
+        const compiler = new StreamScriptCompiler(input);
+        compiler.setInlineScript('select()');
+        return toString(toJSON(compiler.compile())).
             then(out => expect(out).to.equal(json));
     });
 
-    it('should create a pipeline with map', () => {
+    it('should compile inline with a map call', () => {
         const inJson = '{"prop1":1}\n';
         const outJson = '{"prop2":2}\n';
         const input = fromString(inJson);
-        const builder = new PipelineBuilder(input);
-        builder.
-            addPipelinePart('select("!")').
-            addPipelinePart('map(o => ({prop2: o.prop1 + 1}))');
-        return toString(toJSON(builder.build())).
+        const compiler = new StreamScriptCompiler(input);
+        compiler.setInlineScript('select().map(o => ({prop2: o.prop1 + 1}))');
+        return toString(toJSON(compiler.compile())).
             then(out => expect(out).to.equal(outJson));
     });
 
@@ -37,12 +35,11 @@ describe('pipeline', () => {
         const inJson = '{"prop1":1,"prop2":2}\n';
         const outJson = '{"prop2":2}\n';
         const input = fromString(inJson);
-        const builder = new PipelineBuilder(input);
-        builder.addGlobal({ _: _});
-        builder.
-            addPipelinePart('select("!")').
-            addPipelinePart('map(o => _.omit(o, "prop1"))');
-        return toString(toJSON(builder.build())).
+        const compiler = new StreamScriptCompiler(input);
+        compiler.
+            addGlobal({ _: _}).
+            setInlineScript('select().map(o => _.omit(o, "prop1"))');
+        return toString(toJSON(compiler.compile())).
             then(out => expect(out).to.equal(outJson));
     });
 });

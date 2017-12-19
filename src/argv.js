@@ -37,8 +37,8 @@ args.createOption(['-m', '--output-mode'], {
     transform: (mode) => outputs[dashToCamelCase(mode)]
 });
 
-args.createOperand('pipeline', {
-    signature: 'Processing pipeline'
+args.createOperand('inline', {
+    signature: 'Inline script'
 });
 
 export default (argv) =>

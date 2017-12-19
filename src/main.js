@@ -1,7 +1,7 @@
 'use strict';
 
 import parseArgv from './argv';
-import { PipelineBuilder } from './pipeline';
+import { StreamScriptCompiler } from './compiler';
 
 import './lib/extensions/rxjs';
 
@@ -10,11 +10,11 @@ export default (argv) =>
         const input = options['--input'].value;
         const output = options['--output'].value;
         const outputMode = options['--output-mode'].value;
-        const pipeline = options.pipeline.value;
+        const inline = options.inline.value;
 
-        const stream = new PipelineBuilder(input).
-            addPipelinePart(pipeline).
-            build();
+        const stream = new StreamScriptCompiler(input).
+            setInlineScript(inline).
+            compile();
 
         return new Promise((resolve, reject) =>
             outputMode(stream).

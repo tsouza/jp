@@ -27,7 +27,7 @@ class GlobalChain {
     }
 
 } 
-export class PipelineBuilder extends GlobalChain {
+export class StreamScriptCompiler extends GlobalChain {
 
     constructor(input, parent) {
         super(parent);
@@ -36,31 +36,26 @@ export class PipelineBuilder extends GlobalChain {
 
     _createSandbox() {
         return merge({
-            stream: () => this._stream,
-            select: path => filter(this._input, path)
+            select: path => filter(this._input, `!${path || ''}`)
         }, this._getGlobal());
     }
 
-    _initVM() {
-        if (!this._vm) {
-            this._vm = new VM();
-            const sandbox = this._createSandbox();
-            Object.keys(sandbox).forEach(key => 
-                this._vm.freeze(sandbox[key], key));
-        }
+    _createVM() {
+        const vm = new VM();
+        const sandbox = this._createSandbox();
+        Object.keys(sandbox).forEach(key => 
+            vm.freeze(sandbox[key], key));
+        return vm;
     }
 
-    addPipelinePart(part) {
-        this._parts.push(part.trim());
+    setInlineScript(inline) {
+        this._inline = (inline || '').trim();
         return this;
     }
 
-    build() {
-        this._initVM();
-        this._parts.forEach(part =>
-            (this._stream = !this._stream ?
-                this._vm.run(`'use strict';${part}`) :
-                this._vm.run(`'use strict';stream().${part}`))); 
-        return this._stream;
+    compile() {
+        const vm = this._createVM();
+        if (this._inline)
+            return vm.run(`'use strict';${this._inline};`);
     }
 }
