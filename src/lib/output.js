@@ -5,7 +5,7 @@ import { rxToStream } from 'rxjs-stream';
 import AsciiTable from 'ascii-table';
 import _ from 'lodash';
 
-import { KeyAndGroup } from './extensions/groupAndMergeBy';
+import { KeyAndGroup } from './extensions/rxjs/groupAndMergeBy';
 
 export function json (observable) {
     return fromRxToStream(observable.

@@ -3,7 +3,7 @@
 import parseArgv from './argv';
 import { PipelineBuilder } from './pipeline';
 
-import './lib/extensions';
+import './lib/extensions/rxjs';
 
 export default (argv) =>
     parseArgv(argv).then(options => {

@@ -1,8 +1,8 @@
 /* eslint-env mocha */
 'use strict';
 
-import '../src/lib/extensions';
-import { KeyAndGroup } from '../src/lib/extensions/groupAndMergeBy';
+import '../src/lib/extensions/rxjs/';
+import { KeyAndGroup } from '../src/lib/extensions/rxjs/groupAndMergeBy';
 
 import { expect, use } from 'chai';
 import chaiSorted from 'chai-sorted';
