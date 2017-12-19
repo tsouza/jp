@@ -7,6 +7,9 @@ import { isEmpty } from 'lodash';
 import * as outputs from './lib/output';
 
 import _ from 'lodash';
+import homedir from 'homedir';
+import { resolve } from 'path';
+import { stat } from 'fs';
 
 const args = pap.create();
 const v = pap.validators;
@@ -35,6 +38,21 @@ args.createOption(['-m', '--output-mode'], {
             throw new Error(`jp: ${mode.value}: No such output mode. Available are: ${availableModes}`);
     } ],
     transform: (mode) => outputs[dashToCamelCase(mode)]
+});
+
+args.createOption(['-r', '--repository'], {
+    hasValue: true, defaultValue: resolve(homedir(), '.jp'),
+    validate: (opt) => new Promise((resolve, reject) => {
+        stat(opt.value, (err, stat) => {
+            if (stat && !stat.isDirectory())
+                return reject(new Error(`jp: ${opt.value}: Repository must be a directory`));
+            resolve();
+        });
+    })
+});
+
+args.createOption(['-s', '--script'], {
+    hasValue: true
 });
 
 args.createOperand('inline', {

@@ -13,7 +13,7 @@ describe('main', () => {
     
     it('should process simple json', () => 
         createTempFile().
-            spread((temp, cleanup) => test(temp).
+            spread((temp, cleanup) => testSimple(temp).
                 then(() => Promise.all([ 
                     toString(`${__dirname}/stream-tests/simple.json`),
                     toString(temp) 
@@ -21,14 +21,51 @@ describe('main', () => {
                     expect(source).to.equal(target)
                 ).finally(() => cleanup()))));
 
+    it('should process simple json with utils', () => 
+        createTempFile().
+            spread((temp, cleanup) => testUtils(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(array => expect(array.sort()).
+                        to.be.deep.equal([2, 3, 4, 5, 6, 7])).
+                    finally(() => cleanup()))));
+
+    it('should process simple json with script', () => 
+        createTempFile().
+            spread((temp, cleanup) => testScript(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(array => expect(array.sort()).
+                        to.be.deep.equal([2, 3, 4, 5, 6, 7])).
+                    finally(() => cleanup()))));
 });
 
-function test(temp) {
+function testSimple(temp) {
     return main([ 
         `-i=${__dirname}/stream-tests/simple.json`,
         `-o=${temp}`,
         '-m=json',
         'select()'
+    ]);
+}
+
+function testUtils(temp) {
+    return main([ 
+        `-i=${__dirname}/stream-tests/ndjson.json`,
+        `-o=${temp}`,
+        '-m=json',
+        `-r=${__dirname}/repo-test`,
+        'select("!.num[*]").map(i => plusOne(i)).toArray()'
+    ]);
+}
+
+function testScript(temp) {
+    return main([ 
+        `-i=${__dirname}/stream-tests/ndjson.json`,
+        `-o=${temp}`,
+        '-m=json',
+        `-r=${__dirname}/repo-test`,
+        '-s=script-test'
     ]);
 }
 

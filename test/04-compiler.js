@@ -12,36 +12,29 @@ import _ from 'lodash';
 
 describe('compile', () => {
 
-    it('should compile simple inline', () => {
-        const json = '{"prop1":1}\n';
-        const input = fromString(json);
-        const compiler = new StreamScriptCompiler(input);
-        compiler.setInlineScript('select()');
-        return toString(toJSON(compiler.compile())).
-            then(out => expect(out).to.equal(json));
-    });
+    const inJson = '{"prop1":1}\n';
+    const outJson = '{"prop1":2}\n';
 
-    it('should compile inline with a map call', () => {
-        const inJson = '{"prop1":1}\n';
-        const outJson = '{"prop2":2}\n';
-        const input = fromString(inJson);
-        const compiler = new StreamScriptCompiler(input);
-        compiler.setInlineScript('select().map(o => ({prop2: o.prop1 + 1}))');
-        return toString(toJSON(compiler.compile())).
-            then(out => expect(out).to.equal(outJson));
-    });
+    it('should compile simple inline', () =>
+        new StreamScriptCompiler(fromString(inJson)).
+            setInlineScript('select()').compile().
+            then(stream => toString(toJSON(stream))).
+            then(out => expect(out).to.equal(inJson)));
 
-    it('should create a pipeline with map using util', () => {
-        const inJson = '{"prop1":1,"prop2":2}\n';
-        const outJson = '{"prop2":2}\n';
-        const input = fromString(inJson);
-        const compiler = new StreamScriptCompiler(input);
-        compiler.
+    it('should compile inline with a map call', () =>
+        new StreamScriptCompiler(fromString(inJson)).
+            setInlineScript('select().map(o => ({prop1: o.prop1 + 1}))').
+            compile().
+            then(stream => toString(toJSON(stream))).
+            then(out => expect(out).to.equal(outJson)));
+
+    it('should create a pipeline with map using util', () =>
+        new StreamScriptCompiler(fromString(inJson)).
             addGlobal({ _: _}).
-            setInlineScript('select().map(o => _.omit(o, "prop1"))');
-        return toString(toJSON(compiler.compile())).
-            then(out => expect(out).to.equal(outJson));
-    });
+            setInlineScript('select().map(o => _.mapValues(o, v => v + 1))').
+            compile().
+            then(stream => toString(toJSON(stream))).
+            then(out => expect(out).to.equal(outJson)));
 });
 
 function toString(stream) {
