@@ -9,7 +9,6 @@ class GlobalChain {
     constructor(parent) {
         this._parent = parent;
         this._global = {};
-        this._parts = [];
     }
 
     _getGlobal() {
