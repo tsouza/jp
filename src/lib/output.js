@@ -91,7 +91,7 @@ class TableBuilder {
         return this._table.
             setHeading((this._heading = _(this._heading).
                 concat(Object.keys(value)).
-                uniq().sort().value()));
+                uniq().value()));
     }
 
     _toRow(value) {
