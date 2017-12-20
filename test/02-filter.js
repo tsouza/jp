@@ -69,7 +69,8 @@ describe('filter', () => {
     it('should calculate descriptive statistics over "num"', () =>
         test('ndjson', '!.num[*]').
             stats().toPromise().
-            then(stats => expect(stats).to.deep.equal({ min: 1,
+            then(stats => expect(stats).to.deep.equal({ 
+                min: 1,
                 max: 6,
                 sum: 21,
                 zeroes: 0,
