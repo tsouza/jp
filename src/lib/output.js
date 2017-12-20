@@ -21,7 +21,6 @@ export function tableAscii (observable) {
 function tableBuilder(title) {
     let heading = [], table;
     const builder = {
-        //table: table,
         onRow: (row) => {
             if (row instanceof KeyAndGroup) {
                 if (!table)
