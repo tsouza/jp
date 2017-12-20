@@ -9,7 +9,9 @@ export default (stream, path, onNode) =>
         const s = oboe(stream).
             on('node', path, (node, path, ancestors) => {
                 try {
-                    populatePathMetadata(node, path, ancestors);
+                    populatePathMetadata(node, 
+                        path.filter(p => !isNumber(p)), 
+                        ancestors);
                     onNode(node);
                 } catch (e) {
                     s.abort();
