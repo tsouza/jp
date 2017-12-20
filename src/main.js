@@ -34,11 +34,10 @@ export default (argv) =>
             }
 
             return compiler.compile().
-                then((stream => new Promise((resolve, reject) =>
-                    outputMode(stream).
+                then((observable => new Promise((resolve, reject) =>
+                    outputMode(observable, output).
                         on('error', err => reject(err)).
-                        on('end', () => resolve()).
-                        pipe(output))));
+                        on('finish', () => resolve()))));
         });
     });
 
