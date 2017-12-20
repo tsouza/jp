@@ -3,7 +3,7 @@
 
 import main from './main';
 
-main(process.argv.slice(1)).
+main(process.argv.slice(2)).
     catch(err => {
         if (err.stack)
             console.error(err.stack);
