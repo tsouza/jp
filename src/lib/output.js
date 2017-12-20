@@ -96,7 +96,7 @@ class TableBuilder {
 
     _toRow(value) {
         if (_.isEmpty(this._heading))
-            return row;
+            return value;
         return this._heading.map(h => {
             const val = value[h];
             if (_.isArray(val))
