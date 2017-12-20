@@ -18,7 +18,7 @@ describe('input', () => {
             generateValueTests('.', [ 3, 6, 9 ]));
     });
 
-    describe('path metadata', () => {
+    /*describe('path metadata', () => {
         describe('key', () =>
             generatePathMetadataTests(node =>
                 expect(node).to.have.property('__key', 'path3')));
@@ -32,7 +32,7 @@ describe('input', () => {
                 expect(node).to.have.deep.property('__path',
                     ['path1', 'path2', 'path3'])));
 
-    });
+    });*/
 });
 
 function generatePathMetadataTests(validate) {
