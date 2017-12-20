@@ -61,8 +61,7 @@ function testSimple(temp) {
         `-i=${__dirname}/stream-tests/simple.json`,
         `-o=${temp}`,
         '-m=json',
-        '-r=/some-bogus-directory',
-        'select()'
+        '-r=/some-bogus-directory'
     ]);
 }
 

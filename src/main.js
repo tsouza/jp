@@ -11,6 +11,8 @@ import utils from './lib/extensions/utils';
 import { stat } from 'fs';
 import { resolve } from 'path';
 
+import { isEmpty } from 'lodash';
+
 export default (argv) =>
     parseArgv(argv).then(options => {
         const input = options['--input'].value;
@@ -25,13 +27,13 @@ export default (argv) =>
             if (utilsPath)
                 compiler.addGlobalFromPath(utilsPath);
 
-            if (options.inline.isSet)
-                compiler.setInlineScript(options.inline.value);
-            else {
-                const scriptName = options['-s'].value;
+            const scriptName = options['-s'].value;
+            if (!isEmpty(scriptName)) {
                 const scriptPath = `${resolve(repoPath, scriptName)}.js`;
                 compiler.setScriptPath(scriptPath);
             }
+            else
+                compiler.setInlineScript(options.inline.value);
 
             return compiler.compile().
                 then((observable => new Promise((resolve, reject) =>

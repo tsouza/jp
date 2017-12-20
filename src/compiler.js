@@ -8,7 +8,7 @@ import { readFile as _readFile, createReadStream } from 'fs';
 import { resolve } from 'path';
 
 import { attempt } from 'bluebird';
-import { isString } from 'lodash';
+import { isString, isEmpty } from 'lodash';
 
 export class StreamScriptCompiler {
 
@@ -59,14 +59,17 @@ export class StreamScriptCompiler {
     }
 
     compile() {
-        if (this._inlineScript)
-            return attempt(() => this._createVM(() => new VM()).
-                run(`'use strict';${this._inlineScript};`));
-
-        return readFile(this._scriptPath).then(script =>
-            this._createVM(() => new NodeVM({
-                require: { external: true, context: 'sandbox' }
-            })).run(`'use strict';${script}`)());
+        if (!isEmpty(this._scriptPath))
+            return readFile(this._scriptPath).then(script =>
+                this._createVM(() => new NodeVM({
+                    require: { external: true, context: 'sandbox' }
+                })).run(`'use strict';${script}`)());
+        
+        const inlineScript = isEmpty(this._inlineScript) ?
+            'select()' : this._inlineScript;
+                
+        return attempt(() => this._createVM(() => new VM()).
+            run(`'use strict';${inlineScript};`));
     }
 }
 
