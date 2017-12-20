@@ -35,6 +35,16 @@ describe('filter', () => {
             max().toPromise().
             then(val => expect(val).to.equal(6)));
 
+    it('should transform to key-value objects', () =>
+        test('ndjson-kv', '!').
+            kv().toArray().toPromise().
+            then(val => expect(val.sort(asc('key'))).
+                to.deep.equal([
+                    { key: 'key1', value: 1 },
+                    { key: 'key2', value: 2 },
+                    { key: 'key3', value: 3 }
+                ])));
+
     it('should group by key "value1"', () =>
         test('ndjson', '!').
             groupAndMergeBy(e => e.prop1).toPromise().
