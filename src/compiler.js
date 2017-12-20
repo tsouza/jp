@@ -4,8 +4,11 @@ import filter from './lib/filter';
 import { merge } from 'lodash';
 import requireDir from 'require-dir';
 
-import { readFile as _readFile } from 'fs';
+import { readFile as _readFile, createReadStream } from 'fs';
+import { resolve } from 'path';
+
 import { attempt } from 'bluebird';
+import { isString } from 'lodash';
 
 export class StreamScriptCompiler {
 
@@ -16,7 +19,15 @@ export class StreamScriptCompiler {
 
     _createSandbox() {
         return merge({
-            select: path => filter(this._input, `!${path || ''}`)
+            from: path => createReadStream(resolve(process.cwd(), path)),
+            select: (path, input) => {
+                if (!input && !isString(path)) {
+                    input = path;
+                    path = null;
+                }
+                return filter(input || this._input,
+                    `!${path || ''}`);
+            }
         }, this._global);
     }
 

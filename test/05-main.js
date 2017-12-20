@@ -7,6 +7,8 @@ import Promise from 'bluebird';
 import tmp from 'tmp';
 import { createReadStream } from 'fs';
 
+import { asc } from 'comparator';
+
 import main from '../src/main';
 
 describe('main', () => {
@@ -38,6 +40,20 @@ describe('main', () => {
                     then(array => expect(array.sort()).
                         to.be.deep.equal([2, 3, 4, 5, 6, 7])).
                     finally(() => cleanup()))));
+
+    it('should process simple json with script using "from"', () => 
+        createTempFile().
+            spread((temp, cleanup) => testScriptWithFrom(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(array => expect(array.sort(asc('sort1'))).
+                        to.be.deep.equal([
+                            { sort1: 'val-1' },
+                            { sort1: 'val-2' },
+                            { sort1: 'val-3' }
+                        ])).
+                    finally(() => cleanup()))));
+            
 });
 
 function testSimple(temp) {
@@ -67,6 +83,16 @@ function testScript(temp) {
         '-m=json',
         `-r=${__dirname}/repo-test`,
         '-s=script-test'
+    ]);
+}
+
+function testScriptWithFrom(temp) {
+    return main([ 
+        `-i=${__dirname}/stream-tests/ndjson.json`,
+        `-o=${temp}`,
+        '-m=json',
+        `-r=${__dirname}/repo-test`,
+        '-s=script-test-from'
     ]);
 }
 
