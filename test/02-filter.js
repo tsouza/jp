@@ -2,7 +2,6 @@
 'use strict';
 
 import '../src/lib/extensions/rxjs/';
-import { KeyAndGroup } from '../src/lib/extensions/rxjs/groupAndMergeBy';
 
 import { expect, use } from 'chai';
 import chaiSorted from 'chai-sorted';
@@ -44,13 +43,6 @@ describe('filter', () => {
                     { key: 'key2', value: 2 },
                     { key: 'key3', value: 3 }
                 ])));
-
-    it('should group by key "value1"', () =>
-        test('ndjson', '!').
-            groupAndMergeBy(e => e.prop1).toPromise().
-            then(group => expect(group).to.
-                be.instanceOf(KeyAndGroup).and.
-                have.property('groupKey', 'value1')));
     
     it('should sort by key "sort1" asc', () =>
         test('ndjson-sort', '!').
