@@ -32,7 +32,7 @@ function tableBuilder(title) {
                 if (!table)
                     table = new AsciiTable(title);
                 setHeading(row);
-                table.addRowMatrix(toRowMatrix(row));
+                table.addRowMatrix([ toRow(row) ]);
             }
             return builder;
         },
@@ -49,17 +49,17 @@ function tableBuilder(title) {
             uniq().sort().value()));
     }
 
-    function toRowMatrix(row) {
+    function toRow(row) {
         if (_.isEmpty(heading))
-            return [ row ];
-        return [ heading.map(h => {
+            return row;
+        return heading.map(h => {
             const val = row[h];
             if (_.isArray(val))
                 return '[array]';
             if (_.isObject(val))
                 return '[object]';
             return val;
-        }) ];
+        });
     }
 }
 
