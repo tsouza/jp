@@ -7,8 +7,9 @@ import { isObject, isArray, isNumber } from 'lodash';
 export default (stream, path, onNode) =>
     new Promise((resolve, reject) => {
         const s = oboe(stream).
-            on('node', path, (node) => {
+            on('node', path, (node, path, ancestors) => {
                 try {
+                    populatePathMetadata(node, path, ancestors);
                     onNode(node);
                 } catch (e) {
                     s.abort();
@@ -33,9 +34,9 @@ function populatePathMetadata(node, path, ancestors) {
 
     if (isObject(node) || isArray(node))
         Object.defineProperties(node, {
-            __parent: { value: parent },
-            __path: { value: path },
-            __key: { value: key }        
+            __parent: { value: parent, writable: true },
+            __path: { value: path, writable: true },
+            __key: { value: key, writable: true }        
         });
 
     populatePathMetadata(parent, 
