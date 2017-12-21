@@ -58,6 +58,24 @@ describe('filter', () => {
                 be.instanceOf(Array).and.
                 be.sortedBy('sort1', true)));
     
+    it('should groupJoin two streams', () =>
+        test('ndjson-join-left', '!').
+            groupJoin(test('ndjson-join-right', '!'),
+                left => left.keyLeft,   right => right.keyRight,
+                left => left.valueLeft, right => right.valueRight).
+            toArray().toPromise().
+            then(join => expect(join.sort(asc('left', 'right'))).
+                to.deep.equal([
+                    { key: 'key', left: 'left-1', right: 'right-1' },
+                    { key: 'key', left: 'left-1', right: 'right-2' },
+                    { key: 'key', left: 'left-1', right: 'right-3' },
+                    { key: 'key', left: 'left-2', right: 'right-1' },
+                    { key: 'key', left: 'left-2', right: 'right-2' },
+                    { key: 'key', left: 'left-2', right: 'right-3' },
+                    { key: 'key', left: 'left-3', right: 'right-1' },
+                    { key: 'key', left: 'left-3', right: 'right-2' },
+                    { key: 'key', left: 'left-3', right: 'right-3' } ])));
+
     it('should calculate descriptive statistics over "num"', () =>
         test('ndjson', '!.num[*]').
             stats().toPromise().

@@ -62,6 +62,23 @@ describe('main', () => {
                         ])).
                     finally(() => cleanup()))));
             
+    it('should join multiple streams', () => 
+        createTempFile().
+            spread((temp, cleanup) => testScriptWithJoin(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(array => expect(array.sort(asc('left', 'right'))).
+                        to.be.deep.equal([
+                            { key: 'key', left: 'left-1', right: 'right-1' },
+                            { key: 'key', left: 'left-1', right: 'right-2' },
+                            { key: 'key', left: 'left-1', right: 'right-3' },
+                            { key: 'key', left: 'left-2', right: 'right-1' },
+                            { key: 'key', left: 'left-2', right: 'right-2' },
+                            { key: 'key', left: 'left-2', right: 'right-3' },
+                            { key: 'key', left: 'left-3', right: 'right-1' },
+                            { key: 'key', left: 'left-3', right: 'right-2' },
+                            { key: 'key', left: 'left-3', right: 'right-3' } ])).
+                    finally(() => cleanup()))));
 });
 
 function testSimple(temp) {
@@ -115,6 +132,16 @@ function testScriptWithFrom(temp) {
         'script/testFrom'
     ]);
 }
+
+function testScriptWithJoin(temp) {
+    return main([ 
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-r', `${__dirname}/repo-test`,
+        'script/testGroupJoin'
+    ]);
+}
+
 
 function createTempFile() {
     return new Promise((resolve, reject) => {
