@@ -32,13 +32,12 @@ export default (argv) =>
             if (cmdsPath)
                 compiler.setCommandsPath(cmdsPath);
 
-            if (script) {
-                if (inline)
-                    compiler.setInlineScript(script.command);
-                else
-                    compiler.setCommand(script.command).
-                        setCommandArgs(script.args);
-            }
+            if (script)
+                compiler.setCommand(script.command).
+                    setCommandArgs(script.args);
+
+            if (inline)
+                compiler.setInlineScript(inline);
 
             return compiler.compile().
                 then((observable => new Promise((resolve, reject) =>

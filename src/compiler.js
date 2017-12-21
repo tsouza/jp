@@ -77,7 +77,8 @@ export class StreamScriptCompiler {
                 require: { external: true, context: 'sandbox' }
             })).run(`'use strict';
                 const command = require('${commandFile}');
-                module.exports = (argv) => command(argv)`,
+                module.exports = (argv) => command(argv)${
+                    this._inlineScript ? '.' + this._inlineScript : ''}`,
             commandFile)(this._commandArgs || {}));
         }
         

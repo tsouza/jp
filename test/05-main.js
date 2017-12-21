@@ -41,6 +41,14 @@ describe('main', () => {
                         to.be.deep.equal([3, 4, 5, 6, 7, 8])).
                     finally(() => cleanup()))));
 
+    it('should process simple json with script and inline', () => 
+        createTempFile().
+            spread((temp, cleanup) => testScriptWithInline(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(count => expect(count).to.be.equal(6)).
+                    finally(() => cleanup()))));
+
     it('should process simple json with script using "from"', () => 
         createTempFile().
             spread((temp, cleanup) => testScriptWithFrom(temp).
@@ -84,6 +92,17 @@ function testScript(temp) {
         '-r', `${__dirname}/repo-test`,
         'script/testSimple',
         'num:1'
+    ]);
+}
+
+function testScriptWithInline(temp) {
+    return main([ 
+        '-i', `${__dirname}/stream-tests/ndjson.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-r', `${__dirname}/repo-test`,
+        '-l', 'flatMap(i => i).count()',
+        'script/testSimple'
     ]);
 }
 

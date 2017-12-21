@@ -20,7 +20,7 @@ const optionDefinitions = [
     { name: 'output-mode', alias: 'm', type: (mode) => outputs[dashToCamelCase(mode)],
         defaultValue: outputs.tableAscii },
     { name: 'repository', alias: 'r', type: String, defaultValue: resolve(homedir(), '.jp') },
-    { name: 'inline', alias: 'l', type: Boolean, defaultValue: false },
+    { name: 'inline', alias: 'l', type: String },
     { name: 'script', type: String, multiple: true, defaultOption: true }
 ];
   
