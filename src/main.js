@@ -11,29 +11,34 @@ import utils from './lib/extensions/utils';
 import { stat } from 'fs';
 import { resolve } from 'path';
 
-import { isEmpty } from 'lodash';
+//import { isEmpty } from 'lodash';
 
 export default (argv) =>
     parseArgv(argv).then(options => {
-        const input = options['--input'].value;
-        const output = options['--output'].value;
-        const outputMode = options['--output-mode'].value;
-        const repository = options['-r'].value;
+        const input = options.input;
+        const output = options.output;
+        const outputMode = options['output-mode'];
+        const repository = options.repository;
+        const script = options.script;
+        const inline = options.inline;
   
-        return repoExists(repository).spread((repoPath, utilsPath) => {
+        return verify(repository).spread((cmdsPath, utilsPath) => {
             const compiler = new StreamScriptCompiler(input).
                 addGlobal(utils);
 
             if (utilsPath)
                 compiler.addGlobalFromPath(utilsPath);
 
-            const scriptName = options['-s'].value;
-            if (!isEmpty(scriptName)) {
-                const scriptPath = `${resolve(repoPath, scriptName)}.js`;
-                compiler.setScriptPath(scriptPath);
+            if (cmdsPath)
+                compiler.setCommandsPath(cmdsPath);
+
+            if (script) {
+                if (inline)
+                    compiler.setInlineScript(script.command);
+                else
+                    compiler.setCommand(script.command).
+                        setCommandArgs(script.args);
             }
-            else
-                compiler.setInlineScript(options.inline.value);
 
             return compiler.compile().
                 then((observable => new Promise((resolve, reject) =>
@@ -44,22 +49,17 @@ export default (argv) =>
     });
 
 
-function repoExists(repository) {
-    return root().then(rootPath => {
-        if (!rootPath)
-            return [ false, false ];
-        return utils().then(utilsPath =>
-            [ rootPath, utilsPath ]);
-    });
-    
-    function root() {
-        return dirExists(repository);
-    }
-    
-    function utils() {
-        return dirExists(resolve(repository, 'utils'));
-    }
-
+function verify(repository) {
+    return dirExists(repository).
+        then(rootPath => {
+            if (!rootPath)
+                return [ false, false ];
+            return Promise.all([
+                dirExists(resolve(repository, 'commands')), 
+                dirExists(resolve(repository, 'utils'))
+            ]);
+        });
+        
     function dirExists(path) {
         return new Promise(resolve => {
             stat(path, (err, stats) =>

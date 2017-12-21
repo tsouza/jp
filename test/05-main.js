@@ -38,7 +38,7 @@ describe('main', () => {
                 then(() => toString(temp).
                     then(result => JSON.parse(result)).
                     then(array => expect(array.sort()).
-                        to.be.deep.equal([2, 3, 4, 5, 6, 7])).
+                        to.be.deep.equal([3, 4, 5, 6, 7, 8])).
                     finally(() => cleanup()))));
 
     it('should process simple json with script using "from"', () => 
@@ -58,40 +58,42 @@ describe('main', () => {
 
 function testSimple(temp) {
     return main([ 
-        `-i=${__dirname}/stream-tests/simple.json`,
-        `-o=${temp}`,
-        '-m=json',
-        '-r=/some-bogus-directory'
+        '-i', `${__dirname}/stream-tests/simple.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-r', '/some-bogus-directory'
     ]);
 }
 
 function testUtils(temp) {
     return main([ 
-        `-i=${__dirname}/stream-tests/ndjson.json`,
-        `-o=${temp}`,
-        '-m=json',
-        `-r=${__dirname}/repo-test`,
+        '-i', `${__dirname}/stream-tests/ndjson.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-r', `${__dirname}/repo-test`,
+        '-l',
         'select("!.num[*]").map(i => plusOne(i)).toArray()'
     ]);
 }
 
 function testScript(temp) {
     return main([ 
-        `-i=${__dirname}/stream-tests/ndjson.json`,
-        `-o=${temp}`,
-        '-m=json',
-        `-r=${__dirname}/repo-test`,
-        '-s=script-test'
+        '-i', `${__dirname}/stream-tests/ndjson.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-r', `${__dirname}/repo-test`,
+        'script/testSimple',
+        'num:1'
     ]);
 }
 
 function testScriptWithFrom(temp) {
     return main([ 
-        `-i=${__dirname}/stream-tests/ndjson.json`,
-        `-o=${temp}`,
-        '-m=json',
-        `-r=${__dirname}/repo-test`,
-        '-s=script-test-from'
+        '-i', `${__dirname}/stream-tests/ndjson.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-r', `${__dirname}/repo-test`,
+        'script/testFrom'
     ]);
 }
 

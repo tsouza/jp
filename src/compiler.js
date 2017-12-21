@@ -19,6 +19,7 @@ export class StreamScriptCompiler {
 
     _createSandbox() {
         return merge({
+            requireDir: requireDir,
             from: path => createReadStream(resolve(process.cwd(), path)),
             select: (path, input) => {
                 if (!input && !isString(path)) {
@@ -32,10 +33,10 @@ export class StreamScriptCompiler {
     }
 
     _createVM(createVM) {
-        const vm = createVM();
         const sandbox = this._createSandbox();
-        Object.keys(sandbox).forEach(key => 
-            vm.freeze(sandbox[key], key));
+        const vm = createVM(sandbox);
+        /*Object.keys(sandbox).forEach(key => 
+            vm.freeze(sandbox[key], key));*/
         return vm;
     }
 
@@ -45,7 +46,7 @@ export class StreamScriptCompiler {
     }
 
     addGlobalFromPath(path) {
-        return this.addGlobal(loadGlobalFromPath(path));
+        return this.addGlobal(this._loadPath(path));
     }
 
     setInlineScript(inline) {
@@ -53,34 +54,54 @@ export class StreamScriptCompiler {
         return this;
     }
 
-    setScriptPath(path) {
-        this._scriptPath = path;
+    setCommand(command) {
+        this._command = command;
+        return this;
+    }
+
+    setCommandArgs(args) {
+        this._commandArgs = args;
+        return this;
+    }
+
+    setCommandsPath(path) {
+        this._commandsPath = path;
         return this;
     }
 
     compile() {
-        if (!isEmpty(this._scriptPath))
-            return readFile(this._scriptPath).then(script =>
-                this._createVM(() => new NodeVM({
-                    require: { external: true, context: 'sandbox' }
-                })).run(`'use strict';${script}`)());
+        if (!isEmpty(this._command)) {
+            const commandFile = resolve(this._commandsPath, `${this._command}.js`);
+            return attempt(() => this._createVM((sandbox) => new NodeVM({
+                sandbox: sandbox,
+                require: { external: true, context: 'sandbox' }
+            })).run(`'use strict';
+                const command = require('${commandFile}');
+                module.exports = (argv) => command(argv)`,
+            commandFile)(this._commandArgs || {}));
+        }
         
         const inlineScript = isEmpty(this._inlineScript) ?
             'select()' : this._inlineScript;
                 
-        return attempt(() => this._createVM(() => new VM()).
-            run(`'use strict';${inlineScript};`));
+        return attempt(() => this._createVM((sandbox) => new VM({
+            sandbox: sandbox
+        })).run(`'use strict';${inlineScript};`));
+    }
+
+    _loadPath(path) {
+        return this._createVM((sandbox) => new NodeVM({
+            sandbox: sandbox,
+            require: { external: true, context: 'sandbox' }
+        })).run(`'use strict';
+            module.exports = () =>
+                requireDir('${path}', { 
+                    recurse: true 
+                })`, `${path}/index.js`)();
     }
 }
 
-function loadGlobalFromPath(path) {
-    const vm = new NodeVM({
-        sandbox: { requireDir: requireDir },
-        require: { external: true, context: 'sandbox' }
-    });
-    return vm.run('module.exports = () => requireDir(__dirname)',
-        `${path}/index.js`)();
-}
+
 
 function readFile(path) {
     return new Promise((resolve, reject) => {

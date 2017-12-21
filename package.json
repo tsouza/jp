@@ -30,6 +30,7 @@
     "dependencies": {
         "ascii-table": "0.0.9",
         "bluebird": "^3.5.1",
+        "command-line-args": "^4.0.7",
         "comparator": "0.0.1",
         "fast-stats": "0.0.3",
         "filesize": "^3.5.11",
@@ -37,7 +38,6 @@
         "jsonpath": "^1.0.0",
         "lodash": "^4.17.4",
         "oboe": "^2.1.4",
-        "posix-argv-parser": "^2.0.0",
         "require-dir": "^0.3.2",
         "rxjs": "^5.5.5",
         "tinyqueue": "^1.2.3",

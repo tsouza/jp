@@ -1,6 +1,7 @@
 'use strict';
 
-import pap from 'posix-argv-parser';
+//import pap from 'posix-argv-parser';
+import commandLineArgs from 'command-line-args';
 import { createReadStream, createWriteStream } from 'fs';
 import { isEmpty } from 'lodash';
 
@@ -11,7 +12,19 @@ import homedir from 'homedir';
 import { resolve } from 'path';
 import { stat } from 'fs';
 
-const args = pap.create();
+const optionDefinitions = [
+    { name: 'input', alias: 'i', type: (file) => '<stdin>' === file ? process.stdin : 
+        createReadStream(file), defaultValue: '<stdin>' },
+    { name: 'output', alias: 'o', type: (file) => '<stdout>' === file ? process.stdout : 
+        createWriteStream(file), defaultValue: '<stdout>' },
+    { name: 'output-mode', alias: 'm', type: (mode) => outputs[dashToCamelCase(mode)],
+        defaultValue: 'table-ascii' },
+    { name: 'repository', alias: 'r', type: String, defaultValue: resolve(homedir(), '.jp') },
+    { name: 'inline', alias: 'l', type: Boolean, defaultValue: false },
+    { name: 'script', type: String, multiple: true, defaultOption: true }
+];
+  
+/*const args = pap.create();
 const v = pap.validators;
 
 args.createOption(['-i', '--input'], {
@@ -57,13 +70,27 @@ args.createOption(['-s', '--script'], {
 
 args.createOperand('inline', {
     signature: 'Inline script'
-});
+});*/
 
 export default (argv) =>
-    new Promise((resolve, reject) =>
-        args.parse(argv, (err, options) =>
-            (err? reject(err) : resolve(options))    
-        ));
+    new Promise(resolve => {
+        const options = commandLineArgs(optionDefinitions, {
+            argv: argv
+        });
+        if (!_.isEmpty(options.script))
+            options.script = {
+                command: options.script[0],
+                args: options.script.slice(1).map(p => {
+                    p = /^([^:]+):(.+)$/.exec(p);
+                    return { [p[1]]: p[2] };
+                }).reduce((args, arg) => _.merge({}, args, arg), {})
+            };
+        resolve(options);
+    });
+
+/*args.parse(argv, (err, options) =>
+    (err? reject(err) : resolve(options))    
+));*/
 
 
 function dashToCamelCase(string) {
