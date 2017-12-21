@@ -11,8 +11,6 @@ import utils from './lib/extensions/utils';
 import { stat } from 'fs';
 import { resolve } from 'path';
 
-//import { isEmpty } from 'lodash';
-
 export default (argv) =>
     parseArgv(argv).then(options => {
         const input = options.input;

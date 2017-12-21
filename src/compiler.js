@@ -4,7 +4,7 @@ import filter from './lib/filter';
 import { merge } from 'lodash';
 import requireDir from 'require-dir';
 
-import { readFile as _readFile, createReadStream } from 'fs';
+import { createReadStream } from 'fs';
 import { resolve } from 'path';
 
 import { attempt } from 'bluebird';
@@ -100,17 +100,4 @@ export class StreamScriptCompiler {
                     recurse: true 
                 })`, `${path}/index.js`)();
     }
-}
-
-
-
-function readFile(path) {
-    return new Promise((resolve, reject) => {
-        _readFile(path, (err, data) => {
-            if (err)
-                reject(err);
-            else
-                resolve(data.toString());
-        });
-    });
 }

@@ -17,11 +17,7 @@ export default (stream, path, onNode) =>
                     s.abort();
                     reject(e);
                 }
-            })/*.
-            on('node', '*', (node, path, ancestors) =>
-                populatePathMetadata(node, 
-                    path.filter(o => !isNumber(o)),
-                    ancestors))*/.
+            }).
             done(() => resolve()).
             fail(err => reject(err));
     });
