@@ -13,12 +13,12 @@ import { resolve } from 'path';
 import { stat } from 'fs';
 
 const optionDefinitions = [
-    { name: 'input', alias: 'i', type: (file) => '<stdin>' === file ? process.stdin : 
-        createReadStream(file), defaultValue: '<stdin>' },
-    { name: 'output', alias: 'o', type: (file) => '<stdout>' === file ? process.stdout : 
-        createWriteStream(file), defaultValue: '<stdout>' },
+    { name: 'input', alias: 'i', type: (file) => createReadStream(file),
+        defaultValue: process.stdin },
+    { name: 'output', alias: 'o', type: (file) => createWriteStream(file),
+        defaultValue: process.stdout },
     { name: 'output-mode', alias: 'm', type: (mode) => outputs[dashToCamelCase(mode)],
-        defaultValue: 'table-ascii' },
+        defaultValue: outputs.tableAscii },
     { name: 'repository', alias: 'r', type: String, defaultValue: resolve(homedir(), '.jp') },
     { name: 'inline', alias: 'l', type: Boolean, defaultValue: false },
     { name: 'script', type: String, multiple: true, defaultOption: true }
@@ -74,7 +74,7 @@ args.createOperand('inline', {
 
 export default (argv) =>
     new Promise(resolve => {
-        const options = commandLineArgs(optionDefinitions, {
+        const options = commandLineArgs(optionDefinitions, argv && {
             argv: argv
         });
         if (!_.isEmpty(options.script))
