@@ -1,8 +1,7 @@
 import { Observable } from 'rxjs';
 import _ from 'lodash';
 
-Observable.prototype.kv = function kv (keyName, elementSelector) {
-    keyName = keyName || 'key';
+Observable.prototype.kv = function kv (keyName = 'key', elementSelector) {
     elementSelector = elementSelector || ((e) => e);
     return this.
         map(value => Object.
