@@ -1,7 +1,7 @@
 'use strict';
 
 import parseArgv from './argv';
-import { StreamScriptCompiler } from './compiler';
+import { ScriptRunner } from './runner';
 
 import Promise from 'bluebird';
 
@@ -21,23 +21,23 @@ export default (argv) =>
         const inline = options.inline;
   
         return verify(repository).spread((cmdsPath, utilsPath) => {
-            const compiler = new StreamScriptCompiler(input).
+            const runner = new ScriptRunner(input).
                 addGlobal(utils);
 
             if (utilsPath)
-                compiler.addGlobalFromPath(utilsPath);
+                runner.addGlobalFromPath(utilsPath);
 
             if (cmdsPath)
-                compiler.setCommandsPath(cmdsPath);
+                runner.setCommandsPath(cmdsPath);
 
             if (script)
-                compiler.setCommand(script.command).
+                runner.setCommand(script.command).
                     setCommandArgs(script.args);
 
             if (inline)
-                compiler.setInlineScript(inline);
+                runner.setInlineScript(inline);
 
-            return compiler.compile().
+            return runner.run().
                 then((observable => new Promise((resolve, reject) =>
                     outputMode(observable, output).
                         on('error', err => reject(err)).

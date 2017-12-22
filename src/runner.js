@@ -10,7 +10,7 @@ import { resolve } from 'path';
 import { attempt } from 'bluebird';
 import { isString, isEmpty } from 'lodash';
 
-export class StreamScriptCompiler {
+export class ScriptRunner {
 
     constructor(input) {
         this._input = input;
@@ -69,7 +69,7 @@ export class StreamScriptCompiler {
         return this;
     }
 
-    compile() {
+    run() {
         if (!isEmpty(this._command)) {
             const commandFile = resolve(this._commandsPath, `${this._command}.js`);
             return attempt(() => this._createVM((sandbox) => new NodeVM({
