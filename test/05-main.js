@@ -61,6 +61,19 @@ describe('main', () => {
                             { sort1: 'val-3' }
                         ])).
                     finally(() => cleanup()))));
+
+    it('should process simple json with script using "run"', () => 
+        createTempFile().
+            spread((temp, cleanup) => testScriptWithRun(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(array => expect(array.sort(asc('sort1'))).
+                        to.be.deep.equal([
+                            { sort1: 'val-1' },
+                            { sort1: 'val-2' },
+                            { sort1: 'val-3' }
+                        ])).
+                    finally(() => cleanup()))));
             
     it('should join multiple streams', () => 
         createTempFile().
@@ -130,6 +143,15 @@ function testScriptWithFrom(temp) {
         '-m', 'json',
         '-r', `${__dirname}/repo-test`,
         'script/testFrom'
+    ]);
+}
+
+function testScriptWithRun(temp) {
+    return main([ 
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-r', `${__dirname}/repo-test`,
+        'script/testRun'
     ]);
 }
 

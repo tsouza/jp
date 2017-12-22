@@ -20,6 +20,7 @@ export class ScriptRunner {
     _createSandbox() {
         return merge({
             requireDir: requireDir,
+            run: (command, input) => this._run(command, input),
             from: path => createReadStream(resolve(process.cwd(), path)),
             select: (path, input) => {
                 if (!input && !isString(path)) {
@@ -99,5 +100,13 @@ export class ScriptRunner {
                 requireDir('${path}', { 
                     recurse: true 
                 })`, `${path}/index.js`)();
+    }
+
+    _run(command, input) {
+        const runner = new ScriptRunner(input);
+        runner._global = this._global;
+        runner._command = command;
+        runner._commandsPath = this._commandsPath;
+        return runner.run();
     }
 }
