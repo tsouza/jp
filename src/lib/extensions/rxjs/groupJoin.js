@@ -30,3 +30,11 @@ Observable.prototype.groupJoin = function groupJoin (rightStream,
             });
         }));
 };
+
+Observable.prototype.groupJoinOnKey = function groupJoinOnKey (
+    rightStream, key, leftElementSelector, rightElementSelector) {
+    return this.groupJoin(rightStream, 
+        left => left[key], right => right[key],
+        leftElementSelector,
+        rightElementSelector);
+};
