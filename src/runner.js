@@ -73,22 +73,22 @@ export class ScriptRunner {
     run() {
         if (!isEmpty(this._command)) {
             const commandFile = resolve(this._commandsPath, `${this._command}.js`);
-            return attempt(() => this._createVM((sandbox) => new NodeVM({
+            return this._createVM((sandbox) => new NodeVM({
                 sandbox: sandbox,
                 require: { external: true, context: 'sandbox' }
             })).run(`'use strict';
                 const command = require('${commandFile}');
                 module.exports = (argv) => command(argv)${
                     this._inlineScript ? '.' + this._inlineScript : ''}`,
-            commandFile)(this._commandArgs || {}));
+            commandFile)(this._commandArgs || {});
         }
         
         const inlineScript = isEmpty(this._inlineScript) ?
             'select()' : this._inlineScript;
                 
-        return attempt(() => this._createVM((sandbox) => new VM({
+        return this._createVM((sandbox) => new VM({
             sandbox: sandbox
-        })).run(`'use strict';${inlineScript};`));
+        })).run(`'use strict';${inlineScript};`);
     }
 
     _loadPath(path) {

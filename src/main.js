@@ -4,6 +4,7 @@ import parseArgv from './argv';
 import { ScriptRunner } from './runner';
 
 import Promise from 'bluebird';
+import { attempt } from 'bluebird';
 
 import './lib/extensions/rxjs';
 import utils from './lib/extensions/utils';
@@ -37,7 +38,7 @@ export default (argv) =>
             if (inline)
                 runner.setInlineScript(inline);
 
-            return runner.run().
+            return attempt(() => runner.run()).
                 then((observable => new Promise((resolve, reject) =>
                     outputMode(observable, output).
                         on('error', err => reject(err)).
