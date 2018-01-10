@@ -37,12 +37,11 @@
         "homedir": "^0.6.0",
         "jsonpath": "^1.0.0",
         "lodash": "^4.17.4",
-        "oboe": "^2.1.4",
         "require-dir": "^0.3.2",
         "rxjs": "^5.5.6",
         "tinyqueue": "^1.2.3",
         "vm2": "^3.5.2",
-        "yajson-stream": "^1.0.0-rc3"
+        "yajson-stream": "^1.0.0"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",
