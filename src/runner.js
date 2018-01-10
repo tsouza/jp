@@ -28,7 +28,7 @@ export class ScriptRunner {
                     path = null;
                 }
                 return filter(input || this._input,
-                    `!${path || ''}`);
+                    `$${path || ''}`);
             }
         }, this._global);
     }

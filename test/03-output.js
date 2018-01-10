@@ -19,13 +19,13 @@ describe('output', () => {
     describe('json', () => {
 
         it('should print simple json', () => 
-            toString(json, test('ndjson', '!.object1')).
+            toString(json, test('ndjson', '$.object1')).
                 then(out => expect(out).to.equal(repeat(
                     '{"prop1":"value1"}\n', 3
                 ))));
 
         it('should print grouped json', () => 
-            toString(json, test('ndjson', '!.object1').
+            toString(json, test('ndjson', '$.object1').
                 groupBy(o => o.prop1)).
                 then(o => JSON.parse(o)).
                 then(out => expect(out).to.be.deep.equal({
@@ -37,7 +37,7 @@ describe('output', () => {
                 })));
 
         it('should print deep nested json', () => 
-            toString(json, test('ndjson', '!..object5[*]')).
+            toString(json, test('ndjson', '$..object5')).
                 then(out => expect(out).to.equal(repeat(
                     '{"prop2":"value1"}\n', 9
                 ))));
@@ -47,7 +47,7 @@ describe('output', () => {
     describe('table', () => {
 
         it('should print simple objects', () =>
-            toString(tableAscii, test('ndjson', '!.object1')).
+            toString(tableAscii, test('ndjson', '$.object1')).
                 then(out => expect(out).to.equal([
                     '.--------.\n',
                     '| prop1  |\n',
@@ -59,7 +59,7 @@ describe('output', () => {
                 ].join(''))));
        
         it('should not print nested structures objects', () =>
-            toString(tableAscii, test('ndjson', '!').
+            toString(tableAscii, test('ndjson', '$').
                 map(o => ({ num: o.num, prop1: o.prop1, object1: o.object1 }))).
                 then(out => expect(out).to.equal([
                     '.-----------------------------.\n',
@@ -73,7 +73,7 @@ describe('output', () => {
 
 
         it('should print grouped results', () =>
-            toString(tableAscii, test('ndjson', '!').
+            toString(tableAscii, test('ndjson', '$').
                 groupBy(o => o.group1)).
                 then(out => expect(out).to.equal([
                     '.---------------------------------------------------------------------------------.\n',
@@ -100,7 +100,7 @@ describe('output', () => {
                 ].join(''))));
 
         it('should print sorted by "sort1" asc', () =>
-            toString(tableAscii, test('ndjson-sort', '!').
+            toString(tableAscii, test('ndjson-sort', '$').
                 sort(asc('sort1'))).
                 then(out => expect(out).to.equal([
                     '.-------.\n',

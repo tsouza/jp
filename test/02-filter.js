@@ -19,7 +19,7 @@ describe('filter', () => {
     it('should reduce to simple array', () => 
         new Promise((resolve, reject) => {
             const array = [];
-            test('ndjson', '!.num[*]').
+            test('ndjson', '$.num').
                 subscribe({
                     next: num => array.push(num),
                     error: err => reject(err),
@@ -30,12 +30,12 @@ describe('filter', () => {
         ])));
 
     it('should calculate max value', () =>
-        test('ndjson', '!.num[*]').
+        test('ndjson', '$.num').
             max().toPromise().
             then(val => expect(val).to.equal(6)));
 
     it('should transform to key-value objects', () =>
-        test('ndjson-kv', '!').
+        test('ndjson-kv', '$').
             kv().toArray().toPromise().
             then(val => expect(val.sort(asc('key'))).
                 to.deep.equal([
@@ -45,22 +45,22 @@ describe('filter', () => {
                 ])));
     
     it('should sort by key "sort1" asc', () =>
-        test('ndjson-sort', '!').
+        test('ndjson-sort', '$').
             sort(asc('sort1')).toArray().toPromise().
             then(sorted => expect(sorted).to.
                 be.instanceOf(Array).and.
                 be.sortedBy('sort1')));
             
     it('should sort by key "sort1" desc', () =>
-        test('ndjson-sort', '!').
+        test('ndjson-sort', '$').
             sort(desc('sort1')).toArray().toPromise().
             then(sorted => expect(sorted).to.
                 be.instanceOf(Array).and.
                 be.sortedBy('sort1', true)));
     
     it('should groupJoin two streams', () =>
-        test('ndjson-join-left', '!').
-            groupJoin(test('ndjson-join-right', '!'),
+        test('ndjson-join-left', '$').
+            groupJoin(test('ndjson-join-right', '$'),
                 left => left.keyLeft,   right => right.keyRight,
                 left => left.valueLeft, right => right.valueRight).
             toArray().toPromise().
@@ -77,7 +77,7 @@ describe('filter', () => {
                     { key: 'key', left: 'left-3', right: 'right-3' } ])));
 
     it('should calculate descriptive statistics over "num"', () =>
-        test('ndjson', '!.num[*]').
+        test('ndjson', '$.num').
             stats().toPromise().
             then(stats => expect(stats).to.deep.equal({ 
                 min: 1,

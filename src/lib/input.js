@@ -1,12 +1,25 @@
 'use strict';
 
-import oboe from 'oboe';
+//import oboe from 'oboe';
+import yajs from 'yajson-stream';
 import { Promise } from 'bluebird';
 import { isObject, isArray, isNumber } from 'lodash';
 
 export default (stream, path, onNode) =>
     new Promise((resolve, reject) => {
-        const s = oboe(stream).
+        const s = stream.pipe(yajs(path)).
+            on('data', (data) => {
+                try {
+                    populatePathMetadata(data.value, data.path);
+                    onNode(data.value);
+                } catch (e) {
+                    s.destroy();
+                    reject(e);
+                }
+            }).
+            on('error', err => reject(err)).
+            on('end', () => resolve());
+        /*const s = oboe(stream).
             on('node', path, (node, path, ancestors) => {
                 try {
                     populatePathMetadata(node, 
@@ -19,24 +32,13 @@ export default (stream, path, onNode) =>
                 }
             }).
             done(() => resolve()).
-            fail(err => reject(err));
+            fail(err => reject(err));*/
     });
 
-function populatePathMetadata(node, path, ancestors) {
-    if (!node || !ancestors || !ancestors.length || 
-        node === ancestors[0] || node.__parent)
-        return;
-
-    let key = path[path.length - 1];
-    let parent = ancestors[ancestors.length - 1];
-
+function populatePathMetadata(node, path) {
     if (isObject(node) || isArray(node))
         Object.defineProperties(node, {
-            __parent: { value: parent, writable: true },
             __path: { value: path, writable: true },
-            __key: { value: key, writable: true }        
+            __key: { value: path[path.length - 1], writable: true }        
         });
-
-    populatePathMetadata(parent, 
-        path.slice(1), ancestors.slice(1));
 }

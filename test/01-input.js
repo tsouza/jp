@@ -23,9 +23,9 @@ describe('input', () => {
             generatePathMetadataTests(node =>
                 expect(node).to.have.property('__key', 'path3')));
 
-        describe('parent', () =>
+       /* describe('parent', () =>
             generatePathMetadataTests(node =>
-                expect(node).to.have.property('__parent')));
+                expect(node).to.have.property('__parent')));*/
 
         describe('path', () =>
             generatePathMetadataTests(node =>
@@ -38,15 +38,15 @@ describe('input', () => {
 function generatePathMetadataTests(validate) {
 
     it('should handle simple json object', () =>
-        test('simple', '!.path1.path2[*].path3', data => onNode(data)).
+        test('simple', '$.path1.path2.path3', data => onNode(data)).
             then(counter => expect(counter).to.equal(1)));
 
     it('should handle simple array', () =>
-        test('array', '![*].path1.path2[*].path3', data => onNode(data)).
+        test('array', '$.path1.path2.path3', data => onNode(data)).
             then(counter => expect(counter).to.equal(2)));
 
     it('should handle newline delimited json', () =>
-        test('ndjson', '!.path1.path2[*].path3', data => onNode(data)).
+        test('ndjson', '$.path1.path2.path3', data => onNode(data)).
             then(counter => expect(counter).to.equal(3)));
     
     function onNode(node) {
@@ -56,17 +56,17 @@ function generatePathMetadataTests(validate) {
 }
 function generateValueTests(path, counts) {
     it('should handle simple json object', () =>
-        test('simple', `!.${path}prop1`, data => 
+        test('simple', `$.${path}prop1`, data => 
             expect(data).to.equal('value1')).
             then(counter => expect(counter).to.equal(counts[0])));
 
     it('should handle simple array', () =>
-        test('array', `![*].${path}prop1`, data => 
+        test('array', `$.${path}prop1`, data => 
             expect(data).to.equal('value1')).
             then(counter => expect(counter).to.equal(counts[1])));
 
     it('should handle newline delimited json', () =>
-        test('ndjson', `!.${path}prop1`, data => 
+        test('ndjson', `$.${path}prop1`, data => 
             expect(data).to.equal('value1')).
             then(counter => expect(counter).to.equal(counts[2])));
 }

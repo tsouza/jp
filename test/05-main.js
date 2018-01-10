@@ -110,7 +110,7 @@ function testUtils(temp) {
         '-m', 'json',
         '-r', `${__dirname}/repo-test`,
         '-l',
-        'select("!.num[*]").map(i => plusOne(i)).toArray()'
+        'select(".num").map(i => plusOne(i)).toArray()'
     ]);
 }
 
