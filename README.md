@@ -17,7 +17,7 @@ Take the following ndjson as an example:
 Then select all `num` and sum:
 ```bash
 $ npm install -g json-processing
-$ cat test.js | jp -l 'select(".num").reduce((a, b) => a + b, 0)' -m json
+$ cat test.json | jp -l 'select(".num").reduce((a, b) => a + b, 0)' -m json
 3
 ```
 
