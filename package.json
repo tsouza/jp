@@ -3,7 +3,8 @@
     "version": "1.0.0-alpha1",
     "description": "Stream-based JSON processing tool",
     "scripts": {
-        "test": "mocha --require babel-core/register test/**/*.js"
+        "test": "mocha --require babel-core/register test/**/*.js",
+        "prepare": "gulp clean && gulp compile"
     },
     "repository": {
         "type": "git",
