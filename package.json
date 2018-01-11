@@ -1,14 +1,14 @@
 {
     "name": "json-processing",
     "version": "1.0.0-alpha1",
-    "description": "Stream-based JSON processing tool",
+    "description": "JSON Processing Tool",
     "scripts": {
         "test": "mocha --require babel-core/register test/**/*.js",
         "prepare": "gulp clean && gulp compile"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/tsouza/json-processing.git"
+        "url": "git+https://github.com/tsouza/jp.git"
     },
     "keywords": [
         "json",
@@ -19,9 +19,9 @@
     "author": "Thiago Souza <thiago@elastic.co>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/tsouza/json-processing/issues"
+        "url": "https://github.com/tsouza/jp/issues"
     },
-    "homepage": "https://github.com/tsouza/json-processing#readme",
+    "homepage": "https://github.com/tsouza/jp#readme",
     "bin": {
         "jp": "dist/index.js"
     },
