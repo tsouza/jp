@@ -29,7 +29,8 @@ export function json (observable, stream) {
             } 
         },
         error: err => stream.emit('error', err),
-        complete: () => stream.end()
+        complete: () => stream !== process.stdout && 
+            stream.end()
     });
     return stream;
 }
