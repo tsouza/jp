@@ -2,7 +2,7 @@
 
 <a href="https://travis-ci.org/tsouza/jp/builds"><img src="https://travis-ci.org/tsouza/jp.svg?branch=master"></a>
 
-JP combines both [yajson-stream](yajs) and 
+JP combines both [yajson-stream](https://github.com/tsouza/yajs) and 
 [RxJS](https://github.com/ReactiveX/rxjs) to provide a powerful command line tool for filtering and transforming json streams.
 
 ## Example
@@ -21,7 +21,7 @@ $ cat test.js | jp -l 'select(".num").reduce((a, b) => a + b, 0)' -m json
 3
 ```
 
-The `-l` parameter defines the filtering and transformation sequence. It must start with a call to `select(path: string)`, which takes a [yajson-stream](yajs) path as parameter. The return is an [Observable](http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html) from [RxJS](https://github.com/ReactiveX/rxjs).
+The `-l` parameter defines the filtering and transformation sequence. It must start with a call to `select(path: string)`, which takes a [yajson-stream](https://github.com/tsouza/yajs) path as parameter. The return is an [Observable](http://reactivex.io/rxjs/class/es6/Observable.js~Observable.html) from [RxJS](https://github.com/ReactiveX/rxjs).
 
 ## Bugs and Feedback
 
