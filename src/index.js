@@ -5,7 +5,7 @@ import main from './main';
 
 main().catch(err => {
     if ('ARGV_ERROR' === err.message)
-        console.log(error.getUsage());
+        console.log(err.getUsage());
     else if (err.stack)
         console.error(err.stack);
     else if (err instanceof Array)
