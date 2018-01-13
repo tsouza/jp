@@ -45,6 +45,8 @@ export default (argv) =>
             options = commandLineArgs(optionDefinitions, argv && {
                 argv: argv
             });
+            if (options.help)
+                throw new Error();
             if (!_.isEmpty(options.command))
                 options.command = {
                     name: options.command[0],
