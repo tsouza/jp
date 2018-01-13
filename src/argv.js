@@ -80,7 +80,8 @@ function usage() {
         },
         {
             header: 'Options',
-            optionList: optionDefinitions
+            optionList: optionDefinitions.
+                filter(opt => opt.name !== 'command')
         }
     ]);
 }
