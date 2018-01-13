@@ -18,7 +18,7 @@ export default (argv) =>
         const output = options.output;
         const outputMode = options['output-mode'];
         const repository = options.repository;
-        const script = options.script;
+        const command = options.command;
         const inline = options.inline;
   
         return verify(repository).spread((cmdsPath, utilsPath) => {
@@ -31,9 +31,9 @@ export default (argv) =>
             if (cmdsPath)
                 runner.setCommandsPath(cmdsPath);
 
-            if (script)
-                runner.setCommand(script.command).
-                    setCommandArgs(script.args);
+            if (command)
+                runner.setCommand(command.name).
+                    setCommandArgs(command.args);
 
             if (inline)
                 runner.setInlineScript(inline);

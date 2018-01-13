@@ -92,6 +92,16 @@ describe('main', () => {
                             { key: 'key', left: 'left-3', right: 'right-2' },
                             { key: 'key', left: 'left-3', right: 'right-3' } ])).
                     finally(() => cleanup()))));
+
+    it('should throw error because of unknown option', () => 
+        testUnknownOption().
+            then(() => expect.fail('no error', 'ARGV_ERROR')).
+            catch(err => {
+                expect(err.message).to.be.equal('ARGV_ERROR');
+                expect(err.getUsage).to.be.instanceOf(Function);
+                expect(err.getUsage()).to.be.string;
+            })
+    );
 });
 
 function testSimple(temp) {
@@ -163,6 +173,11 @@ function testScriptWithJoin(temp) {
         'script/testGroupJoin'
     ]);
 }
+
+function testUnknownOption() {
+    return main(['--unknown']);;
+}
+
 
 
 function createTempFile() {

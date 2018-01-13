@@ -2,6 +2,8 @@
 
 //import pap from 'posix-argv-parser';
 import commandLineArgs from 'command-line-args';
+import getUsage from 'command-line-usage';
+
 import { createReadStream, createWriteStream } from 'fs';
 
 import * as outputs from './lib/output';
@@ -12,31 +14,74 @@ import { resolve } from 'path';
 
 const optionDefinitions = [
     { name: 'input', alias: 'i', type: (file) => createReadStream(file),
-        defaultValue: process.stdin },
+        defaultValue: process.stdin,
+        description: 'Input file path (defaults to stdin)',
+        typeLabel: '[underline]{file}' },
     { name: 'output', alias: 'o', type: (file) => createWriteStream(file),
-        defaultValue: process.stdout },
+        defaultValue: process.stdout, 
+        description: 'Output file path (defaults to stdout)',
+        typeLabel: '[underline]{file}' },
     { name: 'output-mode', alias: 'm', type: (mode) => outputs[dashToCamelCase(mode)],
-        defaultValue: outputs.tableAscii },
-    { name: 'repository', alias: 'r', type: String, defaultValue: resolve(homedir(), '.jp') },
-    { name: 'inline', alias: 'l', type: String },
-    { name: 'script', type: String, multiple: true, defaultOption: true }
+        defaultValue: outputs.tableAscii,
+        description: 'Output mode. "json" or "table-ascii" (defaults to "table-ascii")',
+        typeLabel: '[underline]{mode}'},
+    { name: 'repository', alias: 'r', type: String, defaultValue: resolve(homedir(), '.jp'),
+        description: 'Custom code repository path (defaults to ~/.jp)',
+        typeLabel: '[underline]{directory}' },
+    { name: 'inline', alias: 'l', type: String,
+        description: 'Inline script definition',
+        typeLabel: '[underline]{script}' },
+    { name: 'command', type: String, multiple: true, defaultOption: true,
+        description: 'Repository command to invoke',
+        typeLabel: '[underline]{command}' },
+    { name: 'help', alias: 'h', type: Boolean, defaultValue: false,
+        description: 'Prints this help message' }
 ];
 
 export default (argv) =>
-    new Promise(resolve => {
-        const options = commandLineArgs(optionDefinitions, argv && {
-            argv: argv
-        });
-        if (!_.isEmpty(options.script))
-            options.script = {
-                command: options.script[0],
-                args: options.script.slice(1).map(p => {
-                    p = /^([^:]+):(.+)$/.exec(p);
-                    return { [p[1]]: p[2] };
-                }).reduce((args, arg) => _.merge({}, args, arg), {})
-            };
+    new Promise((resolve, reject) => {
+        let options;
+        try {
+            options = commandLineArgs(optionDefinitions, argv && {
+                argv: argv
+            });
+            if (!_.isEmpty(options.command))
+                options.command = {
+                    name: options.command[0],
+                    args: options.command.slice(1).map(p => {
+                        p = /^([^:]+):(.+)$/.exec(p);
+                        return { [p[1]]: p[2] };
+                    }).reduce((args, arg) => _.merge({}, args, arg), {})
+                };
+        } catch (e) {
+            const error = new Error('ARGV_ERROR');
+            error.getUsage = usage;
+            reject(error);
+            return;
+        }
         resolve(options);
     });
+
+function usage() {
+    return getUsage([
+        {
+            header: 'Usage',
+            content: 'jp [options] [<command> [<arg:value>...]]'
+        },
+        {
+            header: 'Synopsis',
+            content: [
+                '$ cat some.json | jp -l \'select(".number").map(i => i + 1)\' -m json',
+                '$ jp some/command',
+                '$ jp some/command -l \'filter(v => v === \"SOME_VALUE\")\''
+            ]
+        },
+        {
+            header: 'Options',
+            optionList: optionDefinitions
+        }
+    ]);
+}
 
 function dashToCamelCase(string) {
     return string.replace(/-([a-z])/g, 
@@ -46,3 +91,4 @@ function dashToCamelCase(string) {
 function camelCaseToDash(string) {
     return string.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
 }
+
