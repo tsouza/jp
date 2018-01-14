@@ -75,7 +75,7 @@ export class ScriptRunner {
             const commandFile = resolve(this._commandsPath, `${this._command}.js`);
             return this._createVM((sandbox) => new NodeVM({
                 sandbox: sandbox,
-                require: { external: true, context: 'sandbox' }
+                require: { external: true, context: 'sandbox', builtin: ["*"] }
             })).run(`'use strict';
                 const command = require('${commandFile}');
                 module.exports = (argv) => command(argv)${
