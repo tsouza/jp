@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import _ from 'lodash';
+import { isEmpty } from 'rxjs/operator/isEmpty';
 
 const keySelector = (e) => e.key;
 const elementSelector = (e) => e;
@@ -12,15 +13,19 @@ Observable.prototype.groupJoin = function groupJoin (rightStream,
         map(array => _.groupBy(array, leftKeySelector)).
         mergeMap(left => Observable.create(observable => {
             rightStream.subscribe({
-                next: value => {
+                next: rightElement => {
                     try {
-                        const key = rightKeySelector(value);
-                        (left[key] || []).forEach(left =>
+                        const key = rightKeySelector(rightElement);
+                        const leftJoin = left[key];
+                        if (_.isEmpty(leftJoin))
+                            return;
+                        for (let i = leftJoin.length - 1; i >= 0; i--) {
                             observable.next({
                                 key: key,
-                                left: leftElementSelector(left),
-                                right: rightElementSelector(value) 
-                            }));
+                                left: leftElementSelector(leftJoin[i]),
+                                right: rightElementSelector(rightElement) 
+                            });
+                        }
                     } catch (e) {
                         observable.error(e);
                     }
