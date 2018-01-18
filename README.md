@@ -1,6 +1,9 @@
 # JP: **J**SON **P**rocessing Tool
 
-<a href="https://travis-ci.org/tsouza/jp/builds"><img src="https://travis-ci.org/tsouza/jp.svg?branch=master"></a>
+[![Build Status via Travis CI](https://travis-ci.org/tsouza/jp.svg?branch=master)](https://travis-ci.org/tsouza/jp)
+[![NPM version](https://img.shields.io/npm/v/json-processing.svg)](https://www.npmjs.com/package/json-processing)
+[![Dependency Status via David DM](https://david-dm.org/tsouza/jp/status.svg)](https://david-dm.org/tsouza/jp)
+
 
 JP combines both [yajson-stream](https://github.com/tsouza/yajs) and 
 [RxJS](https://github.com/ReactiveX/rxjs) to provide a powerful command line tool for filtering and transforming json streams.
