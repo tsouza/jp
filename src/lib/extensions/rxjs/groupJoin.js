@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 import _ from 'lodash';
-import { isEmpty } from 'rxjs/operator/isEmpty';
 
 const keySelector = (e) => e.key;
 const elementSelector = (e) => e;
