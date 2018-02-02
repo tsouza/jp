@@ -11,7 +11,7 @@ Observable.prototype.groupJoin = function groupJoin (rightStream,
 
     return this.toArray().
         map(array => _.groupBy(array, leftKeySelector)).
-        mergeMap(left => Observable.create(observable => {
+        mergeMap(left => Observable.create(observer => {
             rightStream.subscribe({
                 next: rightElement => {
                     try {
@@ -20,18 +20,18 @@ Observable.prototype.groupJoin = function groupJoin (rightStream,
                         if (_.isEmpty(leftJoin))
                             return;
                         for (let i = leftJoin.length - 1; i >= 0; i--) {
-                            observable.next({
+                            observer.next({
                                 key: key,
                                 left: leftElementSelector(leftJoin[i]),
                                 right: rightElementSelector(rightElement) 
                             });
                         }
                     } catch (e) {
-                        observable.error(e);
+                        observer.error(e);
                     }
                 },
-                error: err => observable.error(err),
-                complete: () => observable.complete()
+                error: err => observer.error(err),
+                complete: () => observer.complete()
             });
         }));
 };
