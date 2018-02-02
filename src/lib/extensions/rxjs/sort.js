@@ -1,7 +1,5 @@
 import { Observable } from 'rxjs';
-
 import TinyQueue from 'tinyqueue';
-import { times } from 'lodash';
 
 Observable.prototype.sort = function sort (comparator) {
     return this.reduce((queue, value) => {
