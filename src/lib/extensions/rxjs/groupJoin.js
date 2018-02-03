@@ -8,8 +8,11 @@ Observable.prototype.groupJoin = function groupJoin (rightStream,
     leftKeySelector = keySelector, rightKeySelector = keySelector,
     leftElementSelector = elementSelector, rightElementSelector = elementSelector) {
 
-    return this.toArray().
-        map(array => _.groupBy(array, leftKeySelector)).
+    return this.reduce((grouped, left) => {
+            const key = leftKeySelector(left);
+            (grouped[key] || (grouped[key] = [])).push(left);
+            return grouped;
+        }, {}).
         mergeMap(left => Observable.create(observer => {
             rightStream.subscribe({
                 next: rightElement => {
