@@ -8,11 +8,8 @@ Observable.prototype.groupJoin = function groupJoin (rightStream,
     leftKeySelector = keySelector, rightKeySelector = keySelector,
     leftElementSelector = elementSelector, rightElementSelector = elementSelector) {
 
-    return this.reduce((grouped, left) => {
-            const key = leftKeySelector(left);
-            (grouped[key] || (grouped[key] = [])).push(left);
-            return grouped;
-        }, {}).
+    return this.
+        reduce((grouped, left) => toGroup(grouped, left), {}).
         mergeMap(left => Observable.create(observer => {
             rightStream.subscribe({
                 next: rightElement => {
@@ -36,6 +33,12 @@ Observable.prototype.groupJoin = function groupJoin (rightStream,
                 complete: () => observer.complete()
             });
         }));
+
+        function toGroup(grouped, left) {
+            const key = leftKeySelector(left);
+            (grouped[key] || (grouped[key] = [])).push(left);
+            return grouped;
+        }
 };
 
 Observable.prototype.groupJoinOnKey = function groupJoinOnKey (
@@ -45,3 +48,4 @@ Observable.prototype.groupJoinOnKey = function groupJoinOnKey (
         leftElementSelector,
         rightElementSelector);
 };
+
