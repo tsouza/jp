@@ -1,6 +1,6 @@
 {
     "name": "json-processing",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "description": "JSON Processing Tool",
     "scripts": {
         "test": "mocha --require babel-core/register test/**/*.js",
@@ -43,7 +43,7 @@
         "rxjs": "^5.5.6",
         "tinyqueue": "^1.2.3",
         "vm2": "^3.5.2",
-        "yajson-stream": "^1.1.11"
+        "yajson-stream": "^1.1.12"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",
