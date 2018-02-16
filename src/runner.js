@@ -72,7 +72,7 @@ export class ScriptRunner {
 
     run() {
         if (!isEmpty(this._command)) {
-            const commandFile = resolve(this._commandsPath, `${this._command}.js`);
+            const commandFile = resolveCommand(this._commandsPath, this._command);
             return this._createVM((sandbox) => new NodeVM({
                 sandbox: sandbox,
                 require: { external: true, context: 'sandbox', builtin: ["*"] }
@@ -109,4 +109,10 @@ export class ScriptRunner {
         runner._commandsPath = this._commandsPath;
         return runner.run();
     }
+}
+
+function resolveCommand(commandsPath, command) {
+    if (/^.+\.js$/.test(command))
+        return resolve(process.cwd(), command);
+    return resolve(commandsPath, `${command}.js`);
 }
