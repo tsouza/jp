@@ -6,6 +6,35 @@ import _ from 'lodash';
 import { Observable } from 'rxjs';
 import { GroupedObservable } from 'rxjs/operator/groupBy';
 
+export function raw (observable, stream) {
+    observable.subscribe({
+        next: value => {
+            try {
+                if (value instanceof GroupedObservable) {
+                    const key = value.key;
+                    value = value.toArray().
+                        map(array => ({ key: key, values: array }));
+                }
+                
+                if (value instanceof Observable)
+                    value.
+                        subscribe({
+                            next: o => stream.write(o),
+                            error: err => stream.emit('error', err)
+                        });
+                else
+                    stream.write(value);
+            } catch (e) {
+                stream.emit('error', e);
+            } 
+        },
+        error: err => stream.emit('error', err),
+        complete: () => stream !== process.stdout && 
+            stream.end()
+    });
+    return stream;
+}
+
 export function json (observable, stream) {
     observable.subscribe({
         next: value => {

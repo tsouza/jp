@@ -1,6 +1,6 @@
 {
     "name": "json-processing",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "JSON Processing Tool",
     "scripts": {
         "test": "mocha --require babel-core/register test/**/*.js",

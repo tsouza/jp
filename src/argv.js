@@ -23,7 +23,7 @@ const optionDefinitions = [
         typeLabel: '[underline]{file}' },
     { name: 'output-mode', alias: 'm', type: (mode) => outputs[dashToCamelCase(mode)],
         defaultValue: outputs.tableAscii,
-        description: 'Output mode. "json" or "table-ascii" (defaults to "table-ascii")',
+        description: 'Output mode. "raw", "json" or "table-ascii" (defaults to "table-ascii")',
         typeLabel: '[underline]{mode}'},
     { name: 'repository', alias: 'r', type: String, defaultValue: resolve(homedir(), '.jp'),
         description: 'Custom code repository path (defaults to ~/.jp)',
