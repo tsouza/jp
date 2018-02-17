@@ -1,6 +1,5 @@
 'use strict';
 
-//import oboe from 'oboe';
 import yajs from 'yajson-stream';
 import { Promise } from 'bluebird';
 import { isObject, isArray, isNumber } from 'lodash';
@@ -19,20 +18,6 @@ export default (stream, path, onNode) =>
             }).
             on('error', err => reject(err)).
             on('end', () => resolve());
-        /*const s = oboe(stream).
-            on('node', path, (node, path, ancestors) => {
-                try {
-                    populatePathMetadata(node, 
-                        path.filter(p => !isNumber(p)), 
-                        ancestors);
-                    onNode(node);
-                } catch (e) {
-                    s.abort();
-                    reject(e);
-                }
-            }).
-            done(() => resolve()).
-            fail(err => reject(err));*/
     });
 
 function populatePathMetadata(node, path) {
