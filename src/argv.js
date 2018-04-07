@@ -65,7 +65,12 @@ export default (argv) =>
     });
 
 function usage() {
-    return getUsage([
+    const version = require('../package.json').version;
+    return `\njp v${version}\n${getUsage([
+        {
+            header: 'Usage',
+            content: 'jp [options] [<command> [<arg:value>...]]'
+        },
         {
             header: 'Usage',
             content: 'jp [options] [<command> [<arg:value>...]]'
@@ -83,7 +88,7 @@ function usage() {
             optionList: optionDefinitions.
                 filter(opt => opt.name !== 'command')
         }
-    ]);
+    ])}`;
 }
 
 function dashToCamelCase(string) {
