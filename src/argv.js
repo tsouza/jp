@@ -76,17 +76,17 @@ function usage() {
             content: 'jp [options] [<command> [<arg:value>...]]'
         },
         {
+            header: 'Options',
+            optionList: optionDefinitions.
+                filter(opt => opt.name !== 'command')
+        },
+        {
             header: 'Synopsis',
             content: [
                 '$ cat some.json | jp -l \'select(".number").map(i => i + 1)\' -m json',
                 '$ jp some/command',
                 '$ jp some/command -l \'filter(v => v === \"SOME_VALUE\")\''
             ]
-        },
-        {
-            header: 'Options',
-            optionList: optionDefinitions.
-                filter(opt => opt.name !== 'command')
         }
     ])}`;
 }
