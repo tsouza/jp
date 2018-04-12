@@ -72,10 +72,6 @@ function usage() {
             content: 'jp [options] [<command> [<arg:value>...]]'
         },
         {
-            header: 'Usage',
-            content: 'jp [options] [<command> [<arg:value>...]]'
-        },
-        {
             header: 'Options',
             optionList: optionDefinitions.
                 filter(opt => opt.name !== 'command')
