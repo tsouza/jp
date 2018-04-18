@@ -53,7 +53,7 @@ function verify(repository) {
             if (!rootPath)
                 return [ false, false ];
             return Promise.all([
-                dirExists(resolve(repository, 'commands')), 
+                dirExists(resolve(repository, 'scripts')), 
                 dirExists(resolve(repository, 'utils'))
             ]);
         });
