@@ -34,12 +34,11 @@ export class ScriptRunner {
         }, this._global);
     }
 
-    _createVM(createVM) {
-        const sandbox = this._createSandbox();
-        const vm = createVM(sandbox);
-        /*Object.keys(sandbox).forEach(key => 
-            vm.freeze(sandbox[key], key));*/
-        return vm;
+    _createVM() {
+        return new NodeVM({
+            sandbox: this._createSandbox(),
+            require: { external: true, context: 'sandbox', builtin: ["*"] }
+        });
     }
 
     addGlobal(object) {
@@ -74,10 +73,7 @@ export class ScriptRunner {
     run() {
         if (!isEmpty(this._command)) {
             const commandFile = resolveCommand(this._commandsPath, this._command);
-            return this._createVM((sandbox) => new NodeVM({
-                sandbox: sandbox,
-                require: { external: true, context: 'sandbox', builtin: ["*"] }
-            })).run(`'use strict';
+            return this._createVM().run(`'use strict';
                 const command = require('${commandFile}');
                 module.exports = (argv) => command(argv)${
                     this._inlineScript ? '.' + this._inlineScript : ''}`,
@@ -87,16 +83,12 @@ export class ScriptRunner {
         const inlineScript = isEmpty(this._inlineScript) ?
             'select()' : this._inlineScript;
                 
-        return this._createVM((sandbox) => new VM({
-            sandbox: sandbox
-        })).run(`'use strict';${inlineScript};`);
+        return this._createVM().
+            run(`'use strict';module.exports = () => ${inlineScript};`)();
     }
 
     _loadPath(path) {
-        return this._createVM((sandbox) => new NodeVM({
-            sandbox: sandbox,
-            require: { external: true, context: 'sandbox' }
-        })).run(`'use strict';
+        return this._createVM().run(`'use strict';
             module.exports = () =>
                 requireDir('${path}', { 
                     recurse: true 
