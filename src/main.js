@@ -17,11 +17,11 @@ export default (argv) =>
         const input = options.input;
         const output = options.output;
         const outputMode = options['output-mode'];
-        const repository = options.repository;
+        const home = options.home;
         const command = options.command;
         const inline = options.inline;
   
-        return verify(repository).spread((cmdsPath, utilsPath) => {
+        return verify(home).spread((cmdsPath, utilsPath) => {
             const runner = new ScriptRunner(input).
                 addGlobal(utils);
 

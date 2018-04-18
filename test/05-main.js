@@ -109,7 +109,7 @@ function testSimple(temp) {
         '-i', `${__dirname}/stream-tests/simple.json`,
         '-o', `${temp}`,
         '-m', 'json',
-        '-r', '/some-bogus-directory'
+        '-h', '/some-bogus-directory'
     ]);
 }
 
@@ -118,7 +118,7 @@ function testUtils(temp) {
         '-i', `${__dirname}/stream-tests/ndjson.json`,
         '-o', `${temp}`,
         '-m', 'json',
-        '-r', `${__dirname}/repo-test`,
+        '-h', `${__dirname}/repo-test`,
         '-l',
         'select(".num").map(i => plusOne(i)).toArray()'
     ]);
@@ -129,7 +129,7 @@ function testScript(temp) {
         '-i', `${__dirname}/stream-tests/ndjson.json`,
         '-o', `${temp}`,
         '-m', 'json',
-        '-r', `${__dirname}/repo-test`,
+        '-h', `${__dirname}/repo-test`,
         'script/testSimple',
         'num:1'
     ]);
@@ -140,7 +140,7 @@ function testScriptWithInline(temp) {
         '-i', `${__dirname}/stream-tests/ndjson.json`,
         '-o', `${temp}`,
         '-m', 'json',
-        '-r', `${__dirname}/repo-test`,
+        '-h', `${__dirname}/repo-test`,
         '-l', 'flatMap(i => i).count()',
         'script/testSimple'
     ]);
@@ -151,7 +151,7 @@ function testScriptWithFrom(temp) {
         '-i', `${__dirname}/stream-tests/ndjson.json`,
         '-o', `${temp}`,
         '-m', 'json',
-        '-r', `${__dirname}/repo-test`,
+        '-h', `${__dirname}/repo-test`,
         'script/testFrom'
     ]);
 }
@@ -160,7 +160,7 @@ function testScriptWithRun(temp) {
     return main([ 
         '-o', `${temp}`,
         '-m', 'json',
-        '-r', `${__dirname}/repo-test`,
+        '-h', `${__dirname}/repo-test`,
         'script/testRun'
     ]);
 }
@@ -169,13 +169,13 @@ function testScriptWithJoin(temp) {
     return main([ 
         '-o', `${temp}`,
         '-m', 'json',
-        '-r', `${__dirname}/repo-test`,
+        '-h', `${__dirname}/repo-test`,
         'script/testGroupJoin'
     ]);
 }
 
 function testUnknownOption() {
-    return main(['--unknown']);;
+    return main(['--unknown']);
 }
 
 

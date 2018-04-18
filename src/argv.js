@@ -25,8 +25,8 @@ const optionDefinitions = [
         defaultValue: outputs.tableAscii,
         description: 'Output mode. "raw", "json" or "table-ascii" (defaults to "table-ascii")',
         typeLabel: '[underline]{mode}'},
-    { name: 'repository', alias: 'r', type: String, defaultValue: resolve(homedir(), '.jp'),
-        description: 'Custom code repository path (defaults to ~/.jp)',
+    { name: 'home', alias: 'h', type: String, defaultValue: resolve(homedir(), '.jp'),
+        description: 'Script home path (defaults to ~/.jp)',
         typeLabel: '[underline]{directory}' },
     { name: 'inline', alias: 'l', type: String,
         description: 'Inline script definition',
@@ -34,7 +34,7 @@ const optionDefinitions = [
     { name: 'command', type: String, multiple: true, defaultOption: true,
         description: 'Repository command to invoke',
         typeLabel: '[underline]{command}' },
-    { name: 'help', alias: 'h', type: Boolean, defaultValue: false,
+    { name: 'help', type: Boolean, defaultValue: false,
         description: 'Prints this help message' }
 ];
 
