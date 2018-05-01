@@ -90,7 +90,8 @@ export function tableAscii (observable, stream) {
         complete: () => {
             if (builder)
                 builder.render(stream);
-            stream.end();
+            if (process.stdout !== stream)
+                stream.end();
         }
     });
     return stream;
