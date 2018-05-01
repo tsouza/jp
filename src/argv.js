@@ -91,8 +91,3 @@ function dashToCamelCase(string) {
     return string.replace(/-([a-z])/g, 
         (g) => g[1].toUpperCase());
 }
-
-function camelCaseToDash(string) {
-    return string.replace( /([a-z])([A-Z])/g, '$1-$2' ).toLowerCase();
-}
-
