@@ -2,7 +2,7 @@
 
 import yajs from 'yajson-stream';
 import { Promise } from 'bluebird';
-import { isObject, isArray, isNumber } from 'lodash';
+import { isObject, isArray } from 'lodash';
 
 export default (stream, path, onNode) =>
     new Promise((resolve, reject) => {
