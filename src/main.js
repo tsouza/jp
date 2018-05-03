@@ -46,6 +46,9 @@ export default (argv) =>
         });
     });
 
+export function jp() {
+    
+}
 
 function verify(repository) {
     return dirExists(repository).
@@ -66,4 +69,8 @@ function verify(repository) {
                     path));
         });
     }
+}
+
+export function jp(options) {
+    
 }
