@@ -1,4 +1,4 @@
-import { VM, NodeVM } from 'vm2';
+import { NodeVM } from 'vm2';
 import filter from './lib/filter';
 
 import { merge } from 'lodash';
@@ -36,7 +36,7 @@ export class ScriptRunner {
     _createVM() {
         return new NodeVM({
             sandbox: this._createSandbox(),
-            require: { external: true, context: 'sandbox', builtin: ["*"] }
+            require: { external: true, context: 'sandbox', builtin: ['*'] }
         });
     }
 
