@@ -32,6 +32,15 @@ describe('main', () => {
                         to.be.deep.equal([2, 3, 4, 5, 6, 7])).
                     finally(() => cleanup()))));
 
+    it('should process simple json with plugins', () => 
+        createTempFile().
+            spread((temp, cleanup) => testPlugins(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(array => expect(array.sort()).
+                        to.be.deep.equal([1, 1, 1, 1, 1, 1])).
+                    finally(() => cleanup()))));
+            
     it('should process simple json with script', () => 
         createTempFile().
             spread((temp, cleanup) => testScript(temp).
@@ -121,6 +130,17 @@ function testUtils(temp) {
         '-h', `${__dirname}/repo-test`,
         '-l',
         'select(".num").map(i => plusOne(i)).toArray()'
+    ]);
+}
+
+function testPlugins(temp) {
+    return main([ 
+        '-i', `${__dirname}/stream-tests/ndjson.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-h', `${__dirname}/repo-test`,
+        '-l',
+        'select(".num").map(i => $test_plugin(i)).toArray()'
     ]);
 }
 

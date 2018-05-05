@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import requireDir from 'require-dir';
 
 import { createReadStream } from 'fs';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
 
 import { isString, isEmpty } from 'lodash';
 
@@ -69,6 +69,10 @@ export class ScriptRunner {
         return this;
     }
 
+    setPluginsInfo(pluginsInfo) {
+        return this.addGlobal(this._loadPlugins(pluginsInfo));
+    }
+
     run() {
         if (!isEmpty(this._command)) {
             const commandFile = resolveCommand(this._commandsPath, this._command);
@@ -83,6 +87,20 @@ export class ScriptRunner {
                 
         return this._createVM().
             run(`'use strict';module.exports = () => ${inlineScript};`)();
+    }
+
+    _loadPlugins(pluginsInfo) {
+        const homeDir = dirname(pluginsInfo);
+        return this._createVM().run(`'use scrict';
+            module.exports = () => {
+                const pluginsInfo = require("${pluginsInfo}");
+                const result = {};
+                Object.keys(pluginsInfo).forEach(name => {
+                    result["$" + name] = require(pluginsInfo[name])("${homeDir}");
+                });
+                return result;
+            }
+        `, pluginsInfo)();
     }
 
     _loadPath(path) {

@@ -21,7 +21,7 @@ export default (argv) =>
         const command = options.command;
         const inline = options.inline;
   
-        return verify(home).spread((cmdsPath, utilsPath) => {
+        return verify(home).spread((cmdsPath, utilsPath, pluginsJson) => {
             const runner = new ScriptRunner(input).
                 addGlobal(utils);
 
@@ -30,6 +30,9 @@ export default (argv) =>
 
             if (cmdsPath)
                 runner.setCommandsPath(cmdsPath);
+
+            if (pluginsJson)
+                runner.setPluginsInfo(pluginsJson);
 
             if (command)
                 runner.setCommand(command.name).
@@ -46,27 +49,30 @@ export default (argv) =>
         });
     });
 
-export function jp() {
-    
-}
-
 function verify(repository) {
     return dirExists(repository).
         then(rootPath => {
             if (!rootPath)
-                return [ false, false ];
+                return [false, false, false ];
             return Promise.all([
                 dirExists(resolve(repository, 'scripts')), 
-                dirExists(resolve(repository, 'utils'))
+                dirExists(resolve(repository, 'utils')),
+                fileExists(resolve(repository, 'plugins.json'))
             ]);
         });
-        
+
+    function fileExists(path) {
+        return exists(path, stats => !stats.isDirectory());
+    }
+            
     function dirExists(path) {
+        return exists(path, stats => stats.isDirectory());
+    }
+
+    function exists(path, check) {
         return new Promise(resolve => {
             stat(path, (err, stats) =>
-                resolve(stats && 
-                    stats.isDirectory() &&
-                    path));
+                resolve(stats && check(stats) && path));
         });
     }
 }
