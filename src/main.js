@@ -70,7 +70,3 @@ function verify(repository) {
         });
     }
 }
-
-export function jp(options) {
-    
-}
