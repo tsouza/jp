@@ -7,7 +7,6 @@ import requireDir from 'require-dir';
 import { createReadStream } from 'fs';
 import { resolve } from 'path';
 
-import { attempt } from 'bluebird';
 import { isString, isEmpty } from 'lodash';
 
 export class ScriptRunner {
@@ -75,8 +74,7 @@ export class ScriptRunner {
             const commandFile = resolveCommand(this._commandsPath, this._command);
             return this._createVM().run(`'use strict';
                 const command = require('${commandFile}');
-                module.exports = (argv) => command(argv)${
-                    this._inlineScript ? '.' + this._inlineScript : ''}`,
+                module.exports = (argv) => command(argv)${this._inlineScript ? '.' + this._inlineScript : ''}`,
             commandFile)(this._commandArgs || {});
         }
         
