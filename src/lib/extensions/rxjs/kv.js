@@ -8,7 +8,7 @@ Observable.prototype.kv = function kv (keyName = 'key', elementSelector) {
             keys(value).
             map(key => {
                 let val = elementSelector(value[key]);
-                if (!_.isObject(val))
+                if (!_.isObject(val) || _.isArray(val))
                     val = { value: val };
                 return _.merge({ [keyName]: key }, val);
             })).
