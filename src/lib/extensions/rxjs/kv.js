@@ -12,8 +12,8 @@ Observable.prototype.kv = function kv (keyName = 'key', elementSelector) {
                     val = { value: val };
                 const result = _.merge({ [keyName]: key }, val);
                 Object.defineProperties(result, {
-                    __path: value.__path,
-                    __key: value.__key        
+                    __path: { value: value.__path, writable: true },
+                    __key: { value: value.__key, writable: true }        
                 });
                 return result;
             })).
