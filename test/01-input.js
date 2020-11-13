@@ -3,7 +3,7 @@
 
 import { expect } from 'chai';
 
-import input from '../src/lib/input';
+import input from '../dist/lib/input';
 import * as fs from 'fs';
 
 describe('input', () => {

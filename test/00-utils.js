@@ -3,7 +3,7 @@
 
 import { expect } from 'chai';
 
-import utils from '../src/lib/extensions/utils';
+import utils from '../dist/lib/extensions/utils';
 
 describe('utils', () => {
 

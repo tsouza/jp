@@ -1,10 +1,11 @@
-import { Observable } from 'rxjs';
+import { from, MonoTypeOperatorFunction, pipe } from 'rxjs';
 import _ from 'lodash';
+import { mergeMap, map } from 'rxjs/operators';
 
-Observable.prototype.kv = function kv (keyName = 'key', elementSelector) {
-    elementSelector = elementSelector || ((e) => e);
-    return this.
-        map(value => Object.
+export default function kv(keyName = 'key', elementSelector = (e:any) => e) : MonoTypeOperatorFunction<any> {
+    //elementSelector = elementSelector || ((e:any) => e);
+    return pipe(
+        map((value:any) => Object.
             keys(value).
             map(key => {
                 let val = elementSelector(value[key]);
@@ -16,6 +17,7 @@ Observable.prototype.kv = function kv (keyName = 'key', elementSelector) {
                     __key: { value: value.__key, writable: true }        
                 });
                 return result;
-            })).
-        flatMap(e => Observable.from(e));
-};
+            })),
+        mergeMap(e => from(e))
+    )
+}
