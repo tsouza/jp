@@ -1,0 +1,17 @@
+{
+  "include": [
+      "./src/**/*.ts"
+  ],
+  "exclude": [],
+  "compilerOptions": {
+    "target": "es2015",                      
+    "module": "commonjs",                   
+    "allowJs": true,                       
+    "declaration": true,        
+    "noImplicitAny": true,
+    "outDir": "./",                      
+    "rootDir": "src",                 
+    "esModuleInterop": true,
+    "strict": true
+  }
+}

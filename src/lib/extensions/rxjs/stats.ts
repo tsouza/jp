@@ -1,12 +1,13 @@
-import { Observable } from 'rxjs';
+import { MonoTypeOperatorFunction, Observable, pipe } from 'rxjs';
 
 import { Stats } from 'fast-stats';
+import { map, reduce } from 'rxjs/operators';
 
-Observable.prototype.stats = function stats (elementSelector) {
-    let stream = elementSelector ? this.map(elementSelector) : this;
-    return stream.
-        reduce((stats, val) => stats.push(+val), new Stats()).
-        map(stats => ({
+export default function stats(elementSelector = (e:any) => e ): MonoTypeOperatorFunction<any> {
+    return pipe(
+        map(elementSelector),
+        reduce((accumulator:Stats, current:Stats) => accumulator.push(+current), new Stats()),
+        map((stats:Stats) => ({
             min: stats.min,
             max: stats.max,
             sum: stats.sum,
@@ -20,5 +21,6 @@ Observable.prototype.stats = function stats (elementSelector) {
             p75: stats.percentile(75),
             p90: stats.percentile(90),
             p99: stats.percentile(99)
-        }));
-};
+        }))
+    )
+}
