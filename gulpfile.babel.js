@@ -10,10 +10,14 @@ const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('clean', () => del('dist'));
 
-gulp.task('compile-js', () =>
+gulp.task('compile-js', () => merge([
     gulp.src('src/**/*.js', { base: 'src' }).
         pipe(babel()).
-        pipe(gulp.dest('dist')));
+        pipe(gulp.dest('dist')),
+    gulp.src('package.json').
+        pipe(gulp.dest('dist'))
+    ])
+);
 
 gulp.task('compile-ts', () => {
     let tsResult = tsProject.src().pipe(tsProject());
@@ -22,4 +26,4 @@ gulp.task('compile-ts', () => {
         tsResult.dts.pipe(gulp.dest('dist'))
     ]);
 });
-
+  

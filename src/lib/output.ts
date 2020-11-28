@@ -34,8 +34,9 @@ export function raw (observable:Observable<any>, stream:Writable): Writable {
                             next: o => stream.write(o),
                             error: err => stream.emit('error', err)
                         });
-                else
+                else {
                     stream.write(value);
+                }
             } catch (e) {
                 stream.emit('error', e);
             } 

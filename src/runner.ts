@@ -19,7 +19,7 @@ export class ScriptRunner {
     _commandArgs: any;
     _commandsPath: any;
 
-    constructor(input:Stream) {
+    constructor(input?:Stream) {
         this._input = input;
         this._global = {};
     }
