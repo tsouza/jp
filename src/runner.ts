@@ -86,14 +86,7 @@ export class ScriptRunner {
         return this.addGlobal(this._loadPlugins(pluginsInfo));
     }
 
-    run(commandAsString?:string) {
-
-        if (!isEmpty(commandAsString)) {
-            return this._createVM().run(`'use strict';
-                const command = ${commandAsString};
-                module.exports = (argv) => command(argv)${this._inlineScript ? '.' + this._inlineScript : ''}`
-                )(this._commandArgs || {});
-        }
+    run() {
 
         if (!isEmpty(this._command)) {
             const commandFile:string = resolveCommand(this._commandsPath, this._command);
