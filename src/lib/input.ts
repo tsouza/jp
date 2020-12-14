@@ -3,11 +3,12 @@
 import yajs from 'yajson-stream';
 import { Promise } from 'bluebird';
 import { isObject, isArray } from 'lodash';
+import { Stream } from "stream";
 
-export default (stream, path, onNode) =>
+export default (stream:Stream, path:string, onNode:any ) =>
     new Promise((resolve, reject) => {
         const s = stream.pipe(yajs(path)).
-            on('data', (data) => {
+            on('data', (data: any) => {
                 try {
                     populatePathMetadata(data.value, data.path);
                     onNode(data.value);
@@ -16,11 +17,11 @@ export default (stream, path, onNode) =>
                     reject(e);
                 }
             }).
-            on('error', err => reject(err)).
+            on('error', (err: any) => reject(err)).
             on('end', () => resolve());
     });
 
-function populatePathMetadata(node, path) {
+function populatePathMetadata(node: any, path: string) {
     if (isObject(node) || isArray(node))
         Object.defineProperties(node, {
             __path: { value: path, writable: true },

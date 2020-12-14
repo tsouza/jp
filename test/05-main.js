@@ -7,9 +7,9 @@ import Promise from 'bluebird';
 import tmp from 'tmp';
 import { createReadStream } from 'fs';
 
-import { asc } from 'comparator';
+import { asc } from '../dist/lib/extensions/utils/order';
 
-import main from '../src/main';
+import main from '../dist/main';
 
 describe('main', () => {
     
@@ -107,8 +107,6 @@ describe('main', () => {
             then(() => expect.fail('no error', 'ARGV_ERROR')).
             catch(err => {
                 expect(err.message).to.be.equal('ARGV_ERROR');
-                expect(err.getUsage).to.be.instanceOf(Function);
-                expect(err.getUsage()).to.be.string;
             })
     );
 });
@@ -129,7 +127,7 @@ function testUtils(temp) {
         '-m', 'json',
         '-h', `${__dirname}/repo-test`,
         '-l',
-        'select(".num").map(i => plusOne(i)).toArray()'
+        'select(".num").pipe(map(i => plusOne(i)),toArray())'
     ]);
 }
 
@@ -140,7 +138,7 @@ function testPlugins(temp) {
         '-m', 'json',
         '-h', `${__dirname}/repo-test`,
         '-l',
-        'select(".num").map(i => $test_plugin(i)).toArray()'
+        'select(".num").pipe(map(i => $test_plugin(i)),toArray())'
     ]);
 }
 
@@ -161,7 +159,7 @@ function testScriptWithInline(temp) {
         '-o', `${temp}`,
         '-m', 'json',
         '-h', `${__dirname}/repo-test`,
-        '-l', 'flatMap(i => i).count()',
+        '-l', 'pipe(flatMap(i => i),count())',
         'script/testSimple'
     ]);
 }

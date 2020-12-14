@@ -8,29 +8,42 @@ import { createReadStream } from 'fs';
 import { resolve, dirname } from 'path';
 
 import { isString, isEmpty } from 'lodash';
+import { Stream } from 'stream';
 
 export class ScriptRunner {
 
-    constructor(input) {
+    _input: any;
+    _global: {};
+    _inlineScript: any;
+    _command: any;
+    _commandArgs: any;
+    _commandsPath: any;
+
+    constructor(input?:Stream) {
         this._input = input;
         this._global = {};
     }
 
     _createSandbox() {
-        return merge({
+        let sandbox = merge({
             requireDir: requireDir,
-            run: (command, input) => this._run(command, input),
-            from: path => createReadStream(resolve(process.cwd(), path)),
-            select: (path, input) => {
-                if (!input && !isString(path)) {
-                    input = path;
-                    path = null;
+            run: (command:string, input:Stream) => this._run(command, input),
+            from: (path:string) => createReadStream(resolve(process.cwd(), path)),
+            select: (pathOrInput:string|Stream, input:Stream) => {
+                let path:string;
+                if (!input && !isString(pathOrInput)) {
+                    input = pathOrInput;
+                    path = '$';
+                } else if (typeof pathOrInput == 'string') {
+                    path = (pathOrInput as string)
+                } else {
+                    throw new Error("Invalid Parameters on select()");
                 }
-                path = path || '$';
                 path = path[0] != '$' ? `$${path}` : path;
                 return filter(input || this._input, path);
             }
         }, this._global);
+        return sandbox;
     }
 
     _createVM() {
@@ -40,42 +53,43 @@ export class ScriptRunner {
         });
     }
 
-    addGlobal(object) {
+    addGlobal(object:any) {
         this._global = merge({}, this._global, object || {});
         return this;
     }
 
-    addGlobalFromPath(path) {
+    addGlobalFromPath(path:string) {
         return this.addGlobal(this._loadPath(path));
     }
 
-    setInlineScript(inline) {
+    setInlineScript(inline:string) {
         this._inlineScript = inline;
         return this;
     }
 
-    setCommand(command) {
+    setCommand(command:string) {
         this._command = command;
         return this;
     }
 
-    setCommandArgs(args) {
+    setCommandArgs(args:any) {
         this._commandArgs = args;
         return this;
     }
 
-    setCommandsPath(path) {
+    setCommandsPath(path:string) {
         this._commandsPath = path;
         return this;
     }
 
-    setPluginsInfo(pluginsInfo) {
+    setPluginsInfo(pluginsInfo:string) {
         return this.addGlobal(this._loadPlugins(pluginsInfo));
     }
 
     run() {
+
         if (!isEmpty(this._command)) {
-            const commandFile = resolveCommand(this._commandsPath, this._command);
+            const commandFile:string = resolveCommand(this._commandsPath, this._command);
             return this._createVM().run(`'use strict';
                 const command = require('${commandFile}');
                 module.exports = (argv) => command(argv)${this._inlineScript ? '.' + this._inlineScript : ''}`,
@@ -89,7 +103,7 @@ export class ScriptRunner {
             run(`'use strict';module.exports = () => ${inlineScript};`)();
     }
 
-    _loadPlugins(pluginsInfo) {
+    _loadPlugins(pluginsInfo:string) {
         const homeDir = dirname(pluginsInfo);
         return this._createVM().run(`'use scrict';
             module.exports = () => {
@@ -103,7 +117,7 @@ export class ScriptRunner {
         `, pluginsInfo)();
     }
 
-    _loadPath(path) {
+    _loadPath(path:string) {
         return this._createVM().run(`'use strict';
             module.exports = () =>
                 requireDir('${path}', { 
@@ -111,7 +125,7 @@ export class ScriptRunner {
                 })`, `${path}/index.js`)();
     }
 
-    _run(command, input) {
+    _run(command:string, input:Stream) {
         const runner = new ScriptRunner(input);
         runner._global = this._global;
         runner._command = command;
@@ -120,8 +134,7 @@ export class ScriptRunner {
     }
 }
 
-function resolveCommand(commandsPath, command) {
-    if (/^.+\.js$/.test(command))
-        return resolve(process.cwd(), command);
+function resolveCommand(commandsPath:string, command:string): string {
+    if (/^.+\.js$/.test(command)) return resolve(process.cwd(), command);
     return resolve(commandsPath, `${command}.js`);
 }

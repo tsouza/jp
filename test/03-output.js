@@ -5,14 +5,18 @@ import { repeat } from 'lodash';
 
 import { expect } from 'chai';
 
-import { json, tableAscii } from '../src/lib/output';
+import { json, tableAscii } from '../dist/lib/output';
 
-import filter from '../src/lib/filter';
+import filter from '../dist/lib/filter';
 import * as fs from 'fs';
 
-import { asc } from 'comparator';
+import { asc } from '../dist/lib/extensions/utils/order';
 
 import { PassThrough } from 'stream';
+
+import { groupBy, map } from 'rxjs/operators'
+import sort from '../dist/lib/extensions/rxjs/sort'
+
 
 describe('output', () => {
 
@@ -25,8 +29,8 @@ describe('output', () => {
                 ))));
 
         it('should print grouped json', () => 
-            toString(json, test('ndjson', '$.object1').
-                groupBy(o => o.prop1)).
+            toString(json, test('ndjson', '$.object1').pipe(
+                groupBy(o => o.prop1))).
                 then(o => JSON.parse(o)).
                 then(out => expect(out).to.be.deep.equal({
                     key: 'value1',
@@ -59,8 +63,8 @@ describe('output', () => {
                 ].join(''))));
        
         it('should not print nested structures objects', () =>
-            toString(tableAscii, test('ndjson', '$').
-                map(o => ({ num: o.num, prop1: o.prop1, object1: o.object1 }))).
+            toString(tableAscii, test('ndjson', '$').pipe(
+                map(o => ({ num: o.num, prop1: o.prop1, object1: o.object1 })))).
                 then(out => expect(out).to.equal([
                     '.-----------------------------.\n',
                     '|   num   | prop1  | object1  |\n',
@@ -73,8 +77,8 @@ describe('output', () => {
 
 
         it('should print grouped results', () =>
-            toString(tableAscii, test('ndjson', '$').
-                groupBy(o => o.group1)).
+            toString(tableAscii, test('ndjson', '$').pipe(
+                groupBy(o => o.group1))).
                 then(out => expect(out).to.equal([
                     '.---------------------------------------------------------------------------------.\n',
                     '|                                     group1                                      |\n',
@@ -100,8 +104,8 @@ describe('output', () => {
                 ].join(''))));
 
         it('should print sorted by "sort1" asc', () =>
-            toString(tableAscii, test('ndjson-sort', '$').
-                sort(asc('sort1'))).
+            toString(tableAscii, test('ndjson-sort', '$').pipe(
+                sort(asc('sort1')))).
                 then(out => expect(out).to.equal([
                     '.-------.\n',
                     '| sort1 |\n',

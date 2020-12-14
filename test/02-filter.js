@@ -1,18 +1,23 @@
 /* eslint-env mocha */
 'use strict';
 
-import '../src/lib/extensions/rxjs/';
+// import '../dist/lib/extensions/rxjs/';
 
 import { expect, use } from 'chai';
 import chaiSorted from 'chai-sorted';
 
 use(chaiSorted);
 
-import filter from '../src/lib/filter';
+import filter from '../dist/lib/filter';
 import * as fs from 'fs';
 
-import { asc, desc } from 'comparator';
+import { asc, desc } from '../dist/lib/extensions/utils/order';
 
+import { max, toArray  } from 'rxjs/operators'
+import kv from '../dist/lib/extensions/rxjs/kv'
+import sort from '../dist/lib/extensions/rxjs/sort'
+import stats from '../dist/lib/extensions/rxjs/stats'
+import groupJoin from '../dist/lib/extensions/rxjs/groupJoin'
 
 describe('filter', () => {
 
@@ -30,13 +35,15 @@ describe('filter', () => {
         ])));
 
     it('should calculate max value', () =>
-        test('ndjson', '$.num').
-            max().toPromise().
+        test('ndjson', '$.num').pipe(
+            max()).toPromise().
             then(val => expect(val).to.equal(6)));
 
     it('should transform to key-value objects', () =>
-        test('ndjson-kv', '$').
-            kv().toArray().toPromise().
+        test('ndjson-kv', '$').pipe(
+                kv(),
+                toArray()
+            ).toPromise().
             then(val => expect(val.sort(asc('key'))).
                 to.deep.equal([
                     { key: 'key1', value: 1 },
@@ -45,25 +52,25 @@ describe('filter', () => {
                 ])));
     
     it('should sort by key "sort1" asc', () =>
-        test('ndjson-sort', '$').
-            sort(asc('sort1')).toArray().toPromise().
+        test('ndjson-sort', '$').pipe(
+            sort(asc('sort1')),toArray()).toPromise().
             then(sorted => expect(sorted).to.
                 be.instanceOf(Array).and.
                 be.sortedBy('sort1')));
             
     it('should sort by key "sort1" desc', () =>
-        test('ndjson-sort', '$').
-            sort(desc('sort1')).toArray().toPromise().
+        test('ndjson-sort', '$').pipe(
+            sort(desc('sort1')),toArray()).toPromise().
             then(sorted => expect(sorted).to.
                 be.instanceOf(Array).and.
                 be.sortedBy('sort1', true)));
     
     it('should groupJoin two streams', () =>
-        test('ndjson-join-left', '$').
-            groupJoin(test('ndjson-join-right', '$'),
+        test('ndjson-join-left', '$').pipe(
+                groupJoin(test('ndjson-join-right', '$'),
                 left => left.keyLeft,   right => right.keyRight,
-                left => left.valueLeft, right => right.valueRight).
-            toArray().toPromise().
+                left => left.valueLeft, right => right.valueRight),
+            toArray()).toPromise().
             then(join => expect(join.sort(asc('left', 'right'))).
                 to.deep.equal([
                     { key: 'key', left: 'left-1', right: 'right-1' },
@@ -77,8 +84,8 @@ describe('filter', () => {
                     { key: 'key', left: 'left-3', right: 'right-3' } ])));
 
     it('should calculate descriptive statistics over "num"', () =>
-        test('ndjson', '$.num').
-            stats().toPromise().
+        test('ndjson', '$.num').pipe(
+            stats()).toPromise().
             then(stats => expect(stats).to.deep.equal({ 
                 min: 1,
                 max: 6,

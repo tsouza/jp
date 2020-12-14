@@ -2,10 +2,11 @@
 /*eslint no-console: 0 */
 
 import main from './main';
+import { usage } from './argv'
 
 main().catch(err => {
     if ('ARGV_ERROR' === err.message)
-        console.log(err.getUsage());
+        console.log(usage());
     else if (err.stack)
         console.error(err.stack);
     else if (err instanceof Array)
