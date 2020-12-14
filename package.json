@@ -4,7 +4,7 @@
     "description": "JSON Processing Tool",
     "scripts": {
         "test": "mocha --require babel-core/register test/**/*.js",
-        "prepare": "gulp clean && gulp compile-ts && gulp compile-js"
+        "prepare": "gulp clean && gulp compile"
     },
     "repository": {
         "type": "git",
