@@ -42,6 +42,16 @@ describe('compile', () => {
             .then(stream => toString(json, stream))
             .then(out => expect(out).to.equal(outJson)));
 
+    it('should compile inline with a map call with pipeline operator syntax', () =>
+        attempt(() => new ScriptRunner(fromString(inJson))
+            .addGlobal(rxjs)
+            .addGlobal(utils)
+            .addGlobal(rxjs_extensions)
+            .setInlineScript('select() |> map(o => ({prop1: o.prop1 + 1}))')
+            .run())
+            .then(stream => toString(json, stream))
+            .then(out => expect(out).to.equal(outJson)));
+
     it('should create a pipeline with map using util', () =>
         attempt(() => new ScriptRunner(fromString(inJson))
             .addGlobal(rxjs)

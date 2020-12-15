@@ -10,6 +10,8 @@ import { resolve, dirname } from 'path';
 import { isString, isEmpty } from 'lodash';
 import { Stream } from 'stream';
 
+import { transformSync } from '@babel/core'
+
 export class ScriptRunner {
 
     _input: any;
@@ -27,6 +29,7 @@ export class ScriptRunner {
     _createSandbox() {
         let sandbox = merge({
             requireDir: requireDir,
+            __transpileCode: this._transpileCode,
             run: (command:string, input:Stream) => this._run(command, input),
             from: (path:string) => createReadStream(resolve(process.cwd(), path)),
             select: (pathOrInput:string|Stream, input:Stream) => {
@@ -49,8 +52,27 @@ export class ScriptRunner {
     _createVM() {
         return new NodeVM({
             sandbox: this._createSandbox(),
-            require: { external: true, context: 'sandbox', builtin: ['*'] }
+            require: { external: true, context: 'sandbox', builtin: ['*'] },
+            compiler: this._transpileCode
         });
+    }
+
+    _runScript(script:string, path?:string): any {
+        const vm:any = this._createVM()
+        return vm.run(`'use strict';${script}]`, path);
+    }
+
+    _transpileCode(code: string, filename:string): string {
+        const transpiled = transformSync(code, {
+            plugins: [[
+                '@babel/plugin-proposal-pipeline-operator',
+                { proposal: 'minimal' }
+            ]]
+        })
+        if (!transpiled || !transpiled.code) {
+            throw new Error('script transpilation failed')
+        }
+        return transpiled.code;
     }
 
     addGlobal(object:any) {
@@ -90,7 +112,7 @@ export class ScriptRunner {
 
         if (!isEmpty(this._command)) {
             const commandFile:string = resolveCommand(this._commandsPath, this._command);
-            return this._createVM().run(`'use strict';
+            return this._runScript(`
                 const command = require('${commandFile}');
                 module.exports = (argv) => command(argv)${this._inlineScript ? '.' + this._inlineScript : ''}`,
             commandFile)(this._commandArgs || {});
@@ -99,13 +121,12 @@ export class ScriptRunner {
         const inlineScript = isEmpty(this._inlineScript) ?
             'select()' : this._inlineScript;
                 
-        return this._createVM().
-            run(`'use strict';module.exports = () => ${inlineScript};`)();
+        return this._runScript(`module.exports = () => ${inlineScript};`)();
     }
 
     _loadPlugins(pluginsInfo:string) {
         const homeDir = dirname(pluginsInfo);
-        return this._createVM().run(`'use scrict';
+        return this._runScript(`
             module.exports = () => {
                 const pluginsInfo = require("${pluginsInfo}");
                 const result = {};
@@ -118,7 +139,7 @@ export class ScriptRunner {
     }
 
     _loadPath(path:string) {
-        return this._createVM().run(`'use strict';
+        return this._runScript(`
             module.exports = () =>
                 requireDir('${path}', { 
                     recurse: true 
@@ -138,3 +159,4 @@ function resolveCommand(commandsPath:string, command:string): string {
     if (/^.+\.js$/.test(command)) return resolve(process.cwd(), command);
     return resolve(commandsPath, `${command}.js`);
 }
+

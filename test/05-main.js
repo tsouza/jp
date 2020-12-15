@@ -50,6 +50,15 @@ describe('main', () => {
                         to.be.deep.equal([3, 4, 5, 6, 7, 8])).
                     finally(() => cleanup()))));
 
+    it('should process simple json with script using pipeline syntax', () => 
+        createTempFile().
+            spread((temp, cleanup) => testScriptWithPipelineSyntax(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(array => expect(array.sort()).
+                        to.be.deep.equal([3, 4, 5, 6, 7, 8])).
+                    finally(() => cleanup()))));
+            
     it('should process simple json with script and inline', () => 
         createTempFile().
             spread((temp, cleanup) => testScriptWithInline(temp).
@@ -149,6 +158,17 @@ function testScript(temp) {
         '-m', 'json',
         '-h', `${__dirname}/repo-test`,
         'script/testSimple',
+        'num:1'
+    ]);
+}
+
+function testScriptWithPipelineSyntax(temp) {
+    return main([ 
+        '-i', `${__dirname}/stream-tests/ndjson.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-h', `${__dirname}/repo-test`,
+        'script/testSimplePipelineSyntax',
         'num:1'
     ]);
 }
