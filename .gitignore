@@ -89,6 +89,9 @@ typings/
 # dotenv environment variables file
 .env
 
+# Dependencies
+package-lock.json
+
 ### VisualStudioCode ###
 .vscode/*
 .history
