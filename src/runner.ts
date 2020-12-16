@@ -114,7 +114,7 @@ export class ScriptRunner {
             const commandFile:string = resolveCommand(this._commandsPath, this._command);
             return this._runScript(`
                 const command = require('${commandFile}');
-                module.exports = (argv) => command(argv)${this._inlineScript ? '.' + this._inlineScript : ''}`,
+                module.exports = (argv) => command(argv)${this._inlineScript ? this._inlineScript : ''};`,
             commandFile)(this._commandArgs || {});
         }
         

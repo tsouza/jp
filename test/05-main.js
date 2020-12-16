@@ -67,6 +67,14 @@ describe('main', () => {
                     then(count => expect(count).to.be.equal(6)).
                     finally(() => cleanup()))));
 
+    it('should process simple json with script and inline with pipeline syntax', () => 
+        createTempFile().
+            spread((temp, cleanup) => testScriptWithInlineAndPipelineSyntax(temp).
+                then(() => toString(temp).
+                    then(result => JSON.parse(result)).
+                    then(count => expect(count).to.be.equal(6)).
+                    finally(() => cleanup()))));
+
     it('should process simple json with script using "from"', () => 
         createTempFile().
             spread((temp, cleanup) => testScriptWithFrom(temp).
@@ -179,7 +187,18 @@ function testScriptWithInline(temp) {
         '-o', `${temp}`,
         '-m', 'json',
         '-h', `${__dirname}/repo-test`,
-        '-l', 'pipe(flatMap(i => i),count())',
+        '-l', '.pipe(flatMap(i => i),count())',
+        'script/testSimple'
+    ]);
+}
+
+function testScriptWithInlineAndPipelineSyntax(temp) {
+    return main([ 
+        '-i', `${__dirname}/stream-tests/ndjson.json`,
+        '-o', `${temp}`,
+        '-m', 'json',
+        '-h', `${__dirname}/repo-test`,
+        '-l', '|> flatMap(i => i) |> count()',
         'script/testSimple'
     ]);
 }
