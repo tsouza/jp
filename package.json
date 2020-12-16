@@ -29,7 +29,7 @@
         "node": ">=6.0.0"
     },
     "dependencies": {
-        "@babel/plugin-proposal-pipeline-operator": "https://gitpkg.now.sh/tsouza/babel/packages/babel-plugin-proposal-pipeline-operator?cf0c8d9bcbaea697431d2d472d11d028a8485cc4",
+        "@babel/plugin-proposal-pipeline-operator": "https://gitpkg.now.sh/tsouza/babel/packages/babel-plugin-proposal-pipeline-operator?2390b6126de35ca9203a152ad4f247a90522622d",
         "add": "^2.0.6",
         "ascii-table": "0.0.9",
         "bluebird": "^3.5.1",
@@ -43,8 +43,7 @@
         "rxjs": "^6.6.3",
         "tinyqueue": "2.0.3",
         "vm2": "^3.5.2",
-        "yajson-stream": "^1.3.0",
-        "yarn": "^1.22.10"
+        "yajson-stream": "^1.3.0"
     },
     "devDependencies": {
         "@babel/core": "^7.12.10",
