@@ -59,7 +59,7 @@ export class ScriptRunner {
 
     _runScript(script:string, path?:string): any {
         const vm:any = this._createVM()
-        return vm.run(`'use strict';${script}]`, path);
+        return vm.run(`'use strict';${script}`, path);
     }
 
     _transpileCode(code: string, filename:string): string {
