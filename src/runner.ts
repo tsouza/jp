@@ -11,6 +11,7 @@ import { isString, isEmpty } from 'lodash';
 import { Stream } from 'stream';
 
 import { transformSync } from '@babel/core'
+import pipelineOperatorPlugin from '@babel/plugin-proposal-pipeline-operator'
 
 export class ScriptRunner {
 
@@ -65,7 +66,7 @@ export class ScriptRunner {
     _transpileCode(code: string, filename:string): string {
         const transpiled = transformSync(code, {
             plugins: [[
-                '@babel/plugin-proposal-pipeline-operator',
+                pipelineOperatorPlugin,
                 { proposal: 'minimal' }
             ]]
         })
@@ -109,7 +110,6 @@ export class ScriptRunner {
     }
 
     run() {
-
         if (!isEmpty(this._command)) {
             const commandFile:string = resolveCommand(this._commandsPath, this._command);
             return this._runScript(`

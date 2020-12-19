@@ -1,6 +1,6 @@
 {
     "name": "json-processing",
-    "version": "2.0.1",
+    "version": "2.0.3",
     "description": "JSON Processing Tool",
     "scripts": {
         "test": "mocha --require babel-core/register test/*.js",
@@ -29,7 +29,8 @@
         "node": ">=14.0.0"
     },
     "dependencies": {
-        "@babel/plugin-proposal-pipeline-operator": "https://gitpkg.now.sh/tsouza/babel/packages/babel-plugin-proposal-pipeline-operator?2390b6126de35ca9203a152ad4f247a90522622d",
+        "@babel/core": "^7.12.10",
+        "@babel/plugin-proposal-pipeline-operator": "https://gitpkg.now.sh/tsouza/babel/packages/babel-plugin-proposal-pipeline-operator?179bd568d0678ced98eaa29e54ed0ea15dfa8f23",
         "add": "^2.0.6",
         "ascii-table": "0.0.9",
         "bluebird": "^3.5.1",
@@ -46,7 +47,6 @@
         "yajson-stream": "^1.3.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.12.10",
         "@babel/preset-env": "^7.12.7",
         "@types/babel__core": "^7.1.12",
         "@types/bluebird": "^3.5.33",
